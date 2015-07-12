@@ -32,7 +32,7 @@ public class Country {
 	
 	@Override
 	public int hashCode() {
-		return abbreviation.hashCode();
+		return abbreviation.hashCode()*7;
 	}
 
 }

@@ -49,7 +49,7 @@ public class Manufacturer {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 13;
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + country.hashCode();
