@@ -11,7 +11,8 @@ public class Category {
 	public Category(String name) {
 		if(name == null) throw new  NullPointerException("Name can't be null");
 		this.name = name; 
-		}
+	}
+	
 	/**Creates a new category as a child of this*/
 	public Category makeChild(String name) {		
 		Category cat = new Category(name);
@@ -50,6 +51,7 @@ public class Category {
 	public String toString() {
 		return this.name;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 16;
@@ -58,6 +60,7 @@ public class Category {
 		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -77,7 +80,4 @@ public class Category {
 			return false;
 		return true;
 	}
-	
-	
-
 }
