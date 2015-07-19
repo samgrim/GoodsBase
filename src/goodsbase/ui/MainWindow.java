@@ -1,26 +1,25 @@
 package goodsbase.ui;
 
+import goodsbase.ui.dataloaders.CategoryLoader;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
-import java.awt.Color;
-import java.awt.Toolkit;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import java.awt.Component;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JTable;
-import java.awt.BorderLayout;
-import javax.swing.JTree;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JToolBar;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
+import javax.swing.JTree;
 import javax.swing.SwingConstants;
-import java.awt.Dimension;
+
+import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 public class MainWindow {
 
@@ -78,7 +77,7 @@ public class MainWindow {
 		JSplitPane splitPane = new JSplitPane();
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
-		JTree catTree = new JTree();
+		JTree catTree = new JTree(new CategoryLoader().getCatTree());
 		splitPane.setLeftComponent(catTree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
