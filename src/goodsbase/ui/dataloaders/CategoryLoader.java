@@ -1,8 +1,12 @@
 package goodsbase.ui.dataloaders;
 
+import goodsbase.database.DbConnection;
 import goodsbase.model.Category;
 import goodsbase.model.Warehouse;
 import goodsbase.ui.dataloaders.interfaces.CategoryTreeLoader;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -11,6 +15,7 @@ public class CategoryLoader implements CategoryTreeLoader {
 
 	@Override
 	public TreeNode getCatTree() {
+		
 		Warehouse wh = new Warehouse("MyWh", "MyWh address");
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(wh);
 		DefaultMutableTreeNode cat1 = new DefaultMutableTreeNode(new Category("Cat 1"));

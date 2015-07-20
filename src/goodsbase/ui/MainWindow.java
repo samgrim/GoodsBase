@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -68,16 +69,17 @@ public class MainWindow {
 		mnFile.add(mntmOpen);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.setHorizontalAlignment(SwingConstants.TRAILING);
 		mntmAbout.setHorizontalTextPosition(SwingConstants.LEFT);
-		mntmAbout.setMaximumSize(new Dimension(50, 50));
 		mntmAbout.setSize(new Dimension(77, 2));
-		mntmAbout.setHorizontalAlignment(SwingConstants.RIGHT);
 		menuBar.add(mntmAbout);
 		
 		JSplitPane splitPane = new JSplitPane();
+		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
-		JTree catTree = new JTree(new CategoryLoader().getCatTree());
+		JTree catTree;
+		catTree = new JTree(new CategoryLoader().getCatTree());
 		splitPane.setLeftComponent(catTree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
