@@ -1,22 +1,24 @@
-package goodsbase.model;
+package goodsbase.database;
 
 /**Describes category of goods*/
 public class Category {
-
+	
+	private int id;
 	private String name;
 	private String description;
-	private Category parent;
+	private int parentId;
 	
 	/**@throws NullPointerException if name == null*/
-	public Category(String name) {
+	Category(int id, int parentId, String name, String description) {
 		if(name == null) throw new  NullPointerException("Name can't be null");
 		this.name = name; 
+		this.description = description;
 	}
 	
-	/**Creates a new category as a child of this*/
-	public Category makeChild(String name) {		
-		Category cat = new Category(name);
-		cat.parent = this;
+	/**Creates a new category as a child of this
+	 * @throws NullPointerException if name == null*/
+	public Category makeChild(String name, String description) {		
+		Category cat = new Category(0, this.id, name, description);
 		return cat;
 	}
 
@@ -38,12 +40,12 @@ public class Category {
 		this.description = description;
 	}
 
-	public Category getParent() {
-		return parent;
+	public int getParentId() {
+		return parentId;
 	}
 	
-	public void setParent(Category parent) {
-		this.parent = parent;
+	public int getId(){
+		return this.id;
 	}
 	
 	/**@return name of the category*/
@@ -55,10 +57,7 @@ public class Category {
 	@Override
 	public int hashCode() {
 		final int prime = 16;
-		int result = 1;
-		result = prime * result + name.hashCode();
-		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-		return result;
+		return name.hashCode()*prime;
 	}
 	
 	@Override
@@ -72,11 +71,6 @@ public class Category {
 		
 		Category other = (Category) obj;
 		if (!name.equals(other.name))
-			return false;
-		if (parent == null) {
-			if (other.parent != null)
-				return false;
-		} else if (!parent.equals(other.parent))
 			return false;
 		return true;
 	}

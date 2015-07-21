@@ -1,5 +1,7 @@
 package goodsbase.model;
 
+import goodsbase.database.Category;
+
 /**Describes good*/
 public class Good {
 

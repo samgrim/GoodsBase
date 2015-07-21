@@ -1,14 +1,13 @@
 package goodsbase;
 
 import goodsbase.database.DbConnection;
-import goodsbase.ui.CategoryTree;
 import goodsbase.ui.MainWindow;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -35,7 +34,7 @@ public class Main {
 					+ e.getMessage(), "Launch failed", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		
+			
 		MainWindow.launch();		
 	}
 	

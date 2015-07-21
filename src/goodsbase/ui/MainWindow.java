@@ -1,6 +1,7 @@
 package goodsbase.ui;
 
-import goodsbase.ui.dataloaders.CategoryLoader;
+import goodsbase.database.DataLoader;
+import goodsbase.model.Warehouse;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -44,15 +45,17 @@ public class MainWindow {
 
 	/**
 	 * Create the application.
+	 * @throws SQLException 
 	 */
-	public MainWindow() {
+	public MainWindow() throws SQLException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws SQLException 
 	 */
-	private void initialize() {
+	private void initialize() throws SQLException {
 		frmGoodsBase = new JFrame();
 		frmGoodsBase.setTitle("Goods Base");
 		frmGoodsBase.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/Coin - Stacks (Silver)_24x24.gif")));
@@ -78,8 +81,10 @@ public class MainWindow {
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
+		DataLoader dl = new DataLoader();
+		dl.connectDB();
 		JTree catTree;
-		catTree = new JTree(new CategoryLoader().getCatTree());
+		catTree = new CategoryTree(dl.getCategories(new Warehouse("1", "2")));
 		splitPane.setLeftComponent(catTree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
