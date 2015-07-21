@@ -1,8 +1,5 @@
 package goodsbase.model;
 
-import goodsbase.util.WarehouseManager;
-
-
 /**Describes warehouse*/
 public class Warehouse {
 	private String name;
@@ -14,11 +11,6 @@ public class Warehouse {
 		this.name = name;
 		this.address = address;
 	}
-	
-	public WarehouseManager getManager(){
-		return null;
-	}
-	
 	public String getName() {
 		return name;
 	}

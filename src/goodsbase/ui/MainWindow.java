@@ -1,8 +1,5 @@
 package goodsbase.ui;
 
-import goodsbase.database.DataLoader;
-import goodsbase.model.Warehouse;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,6 +19,8 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import goodsbase.model.Warehouse;
 
 public class MainWindow {
 
@@ -80,11 +79,7 @@ public class MainWindow {
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
-		
-		DataLoader dl = new DataLoader();
-		dl.connectDB();
-		JTree catTree;
-		catTree = new CategoryTree(dl.getCategories(new Warehouse("1", "2")));
+		JTree catTree = CategoryTreeBuilder.getTree(new Warehouse("1", "1"));
 		splitPane.setLeftComponent(catTree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);

@@ -1,13 +1,6 @@
 package goodsbase;
 
-import goodsbase.database.DbConnection;
-import goodsbase.ui.MainWindow;
-
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -15,6 +8,9 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import goodsbase.database.DbConnection;
+import goodsbase.ui.MainWindow;
 
 public class Main {
 	
