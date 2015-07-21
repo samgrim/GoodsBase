@@ -31,12 +31,9 @@ public class DbConnection {
 			prop.load(in);
 			url = prop.getProperty("db.url");
 			driverClass = prop.getProperty("db.driver");									
-		} catch (FileNotFoundException e) {
-			log.log(Level.WARNING, String.format("Cannot find %s resource", propResName), e);
 		} catch (IOException e) {
 			log.log(Level.WARNING, String.format("Failed reading %s resource", propResName), e);
-		}
-		
+		}		
 		/*even if there's no exceptions, 
 		 * properties may be not configured properly*/
 		if(url != null && driverClass != null) {
