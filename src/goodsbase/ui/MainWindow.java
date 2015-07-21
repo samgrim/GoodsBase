@@ -79,6 +79,7 @@ public class MainWindow {
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
+		
 		JTree catTree = CategoryTreeBuilder.getTree(new Warehouse("1", "1"));
 		splitPane.setLeftComponent(catTree);
 		
