@@ -1,8 +1,8 @@
 package goodsbase.database;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ public class DbConnection {
 	private static String url;
 	private static String driverClass;
 	
-	private static final String propFileName = "database.properties";
+	private static final String propResName = "/database.properties";
 	
 	private static final Logger log = Logger.getLogger(DbConnection.class.getName());
 	
@@ -26,15 +26,15 @@ public class DbConnection {
 	 * @throws DbInitException*/
 	public static void init() throws DbInitException{		
 		log.info("Initializing database properties...");
-		try(FileInputStream fin = new FileInputStream(propFileName);){
+		try(InputStream in = DbConnection.class.getResourceAsStream(propResName);){
 			Properties prop = new Properties();
-			prop.load(fin);
+			prop.load(in);
 			url = prop.getProperty("db.url");
 			driverClass = prop.getProperty("db.driver");									
 		} catch (FileNotFoundException e) {
-			log.log(Level.WARNING, String.format("Cannot find %s file", propFileName), e);
+			log.log(Level.WARNING, String.format("Cannot find %s resource", propResName), e);
 		} catch (IOException e) {
-			log.log(Level.WARNING, String.format("Failed reading %s file", propFileName), e);
+			log.log(Level.WARNING, String.format("Failed reading %s resource", propResName), e);
 		}
 		
 		/*even if there's no exceptions, 
