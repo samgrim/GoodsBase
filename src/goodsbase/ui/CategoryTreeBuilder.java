@@ -1,5 +1,7 @@
 package goodsbase.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -9,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,12 +28,17 @@ public class CategoryTreeBuilder {
 	private static final Logger log = Logger.getLogger(CategoryTreeBuilder.class.getName());
 	private static DataLoader loader;
 	private static JPopupMenu treeNodeMenu;
+	private static JTree tree;
 	
 	static {
 		treeNodeMenu = new JPopupMenu();
 		JMenuItem addChild = new JMenuItem("Add");
+		TreeNodeMenuListener listener = new TreeNodeMenuListener();
+		addChild.addActionListener(listener);
 		JMenuItem edit = new JMenuItem("Edit");
+		edit.addActionListener(listener);
 		JMenuItem remove = new JMenuItem("Remove");
+		remove.addActionListener(listener);
 		treeNodeMenu.add(addChild);
 		treeNodeMenu.add(edit);
 		treeNodeMenu.add(remove);
@@ -56,7 +64,7 @@ public class CategoryTreeBuilder {
 				log.log(Level.WARNING, "Failed to close connection", e);
 			}
 		}
-		JTree tree = new JTree(root){
+		tree = new JTree(root){
 			@Override
 			public String getToolTipText(MouseEvent e) {
  
@@ -112,6 +120,43 @@ public class CategoryTreeBuilder {
 		for(int i = 0; i < root.getChildCount(); i++) {
 			buildTree(categories, (DefaultMutableTreeNode)root.getChildAt(i));
 		}
+	}
+	
+	private static Category getSelectedCategory() {
+		TreePath path = tree.getSelectionPath();
+		if(path == null) return null;
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+		Object obj = node.getUserObject();
+		return (obj instanceof Category)? (Category)obj : null;
+	}
+	
+	private static class TreeNodeMenuListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JMenuItem menuItem = (JMenuItem)e.getSource();
+			Category c = getSelectedCategory();
+			if(menuItem == treeNodeMenu.getComponent(0)) {
+				addAction(c);
+			} else if (menuItem == treeNodeMenu.getComponent(1)){
+				editAction(c);
+			} else if (menuItem == treeNodeMenu.getComponent(2)) {
+				removeAction(c);
+			}
+		}
+		
+		private void addAction(Category c){
+			JOptionPane.showMessageDialog(null, c.getName(), "Add menu action", JOptionPane.INFORMATION_MESSAGE);			
+		}
+		
+		private void editAction(Category c){
+			JOptionPane.showMessageDialog(null, c.getName(), "Edit menu action", JOptionPane.INFORMATION_MESSAGE);			
+		}
+		
+		private void removeAction(Category c) {
+			JOptionPane.showMessageDialog(null, c.getName(), "Remove menu action", JOptionPane.INFORMATION_MESSAGE);			
+		}
+		
 	}
 
 
