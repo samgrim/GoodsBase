@@ -24,6 +24,18 @@ public class CategoryTreeBuilder {
 	
 	private static final Logger log = Logger.getLogger(CategoryTreeBuilder.class.getName());
 	private static DataLoader loader;
+	private static JPopupMenu treeNodeMenu;
+	
+	static {
+		treeNodeMenu = new JPopupMenu();
+		JMenuItem addChild = new JMenuItem("Add");
+		JMenuItem edit = new JMenuItem("Edit");
+		JMenuItem remove = new JMenuItem("Remove");
+		treeNodeMenu.add(addChild);
+		treeNodeMenu.add(edit);
+		treeNodeMenu.add(remove);
+	}
+	
 	
 	public static JTree getTree(Warehouse wh) {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -66,15 +78,8 @@ public class CategoryTreeBuilder {
 				TreePath path = tree.getPathForLocation(x, y);
 				if (path == null)
 					return;	
-
 				tree.setSelectionPath(path);
-
-				DefaultMutableTreeNode obj = (DefaultMutableTreeNode)path.getLastPathComponent();
-
-				String label = "popup: " + obj.toString();
-				JPopupMenu popup = new JPopupMenu();
-				popup.add(new JMenuItem(label));
-				popup.show(tree, x, y);
+				treeNodeMenu.show(tree, x, y);
 			}
 			public void mousePressed(MouseEvent e) {
 				if (e.isPopupTrigger()) myPopupEvent(e);
@@ -87,6 +92,8 @@ public class CategoryTreeBuilder {
 		tree.setRootVisible(false);
 		return tree;
 	}
+	
+	
 	
 	
 	/*Builds a tree of categories*/
@@ -106,6 +113,6 @@ public class CategoryTreeBuilder {
 			buildTree(categories, (DefaultMutableTreeNode)root.getChildAt(i));
 		}
 	}
-	
+
 
 }
