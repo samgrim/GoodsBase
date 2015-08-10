@@ -1,4 +1,4 @@
-package goodsbase.database;
+package goodsbase.model;
 
 /**Describes category of goods*/
 public class Category {
@@ -9,7 +9,7 @@ public class Category {
 	private int parentId;
 	
 	/**@throws NullPointerException if name == null*/
-	Category(int id, int parentId, String name, String description) {
+	public Category(int id, int parentId, String name, String description) {
 		if(name == null) throw new  NullPointerException("Name can't be null");
 		this.id = id;
 		this.parentId = parentId;
