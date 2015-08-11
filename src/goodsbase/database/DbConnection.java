@@ -63,7 +63,7 @@ public class DbConnection {
 	
 	/**Creates a new database connection
 	 * @throws SQLException */
-	static Connection getConnection() throws SQLException{
+	public static Connection getConnection() throws SQLException{
 		return DriverManager.getConnection(url);
 	}
 	/*Creates tables within a single transaction*/
