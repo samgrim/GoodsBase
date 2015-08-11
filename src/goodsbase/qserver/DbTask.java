@@ -4,6 +4,7 @@
  */
 package goodsbase.qserver;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
@@ -15,7 +16,7 @@ public interface DbTask {
 	/**
 	 * Executes task
 	 */
-	void execute();
+	void execute(Connection c);
 	
 	/**
 	 * @return ResultSet that has been created during execute() 
@@ -23,4 +24,9 @@ public interface DbTask {
 	 * has not created any ResultSet
 	 */
 	ResultSet getResult();
+	
+	/**
+	 * @return true if task execution is complete
+	 */
+	boolean isComplete();
 }
