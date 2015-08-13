@@ -20,6 +20,7 @@ public class QRequest implements Serializable{
 		this.type = type;
 		this.body = new LinkedList<String>();
 	}
+	
 	/**@return number of queries in the request*/
 	public int getQueryNumber(){
 		return body.size();
