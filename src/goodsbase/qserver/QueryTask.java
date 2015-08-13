@@ -10,14 +10,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**Can execute SELECT query
+/**Can execute SELECT request
  * 
  * @author Daria
  */
 public class QueryTask implements ResultDbTask, AutoCloseable {
 
-	public QueryTask(String query) {
-		this.query = query;
+	/**@throws UnacceptableRequestException in case of invalid request*/
+	public QueryTask(QRequest request) {
+		if (request.getType()!=QRequest.Type.SELECT)
+			throw new UnacceptableRequestException("Request type must be SELECT");
+		if(request.getBody().size()!=1)
+			throw new UnacceptableRequestException("Invalid number of queries");
+		this.query = request.getBody().get(0);
 	}
 
 	@Override
