@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ class QueryHandler implements Runnable {
 	 */
 	public QueryHandler(Socket socket, QueryExecutor executor) {
 		this.socket = socket;
-		
+		this.executor = executor;
 	}
 
 	@Override
@@ -59,19 +60,23 @@ class QueryHandler implements Runnable {
 	
 	private void processSelect(QRequest request) {
 		QueryTask task = new QueryTask(request);
-		try (OutputStream out = socket.getOutputStream();) {	// out will be closed automatically
+		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) {	// out will be closed automatically
 			executeTask(task);
 			if(task.getExceptions().size() == 0) {
-				out.write(QRequest.OK_CODE);			
+				out.write(String.valueOf(QRequest.OK_CODE));
+				out.write("\n");
+				out.flush();
 				//TODO: response must be ready before writing
 				try {
-					writeResponse(task.getResult(), out);
+					writeResponse(task.getResult(), socket.getOutputStream());
 				} catch (XMLStreamException | SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
-				out.write(QRequest.ERROR_CODE);
+				out.write(String.valueOf(QRequest.ERROR_CODE));
+				out.write("\n");
+				out.flush();
 			}
 		} catch (IOException e) {
 			log.log(Level.WARNING,"Exception caught during request processing", e);
@@ -101,12 +106,12 @@ class QueryHandler implements Runnable {
 	
 	/*writes Result set as xml file*/
 	private static void writeResponse(ResultSet set, OutputStream out) throws XMLStreamException, SQLException {
-		XMLOutputFactory factory = XMLOutputFactory.newInstance();		
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();	
 		XMLStreamWriter writer = null;	
 		ResultSetMetaData metaData = set.getMetaData();
 		int colsCount = metaData.getColumnCount();
 		try {
-			writer = factory.createXMLStreamWriter(out);					
+			writer = factory.createXMLStreamWriter(out, "utf-8");	//!!important to set utf-8 directly				
 			writer.writeStartDocument();
 			writer.writeStartElement("result");
 			while(set.next()) {
