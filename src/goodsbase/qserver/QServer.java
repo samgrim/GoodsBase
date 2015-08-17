@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  */
 public class QServer implements Runnable{
 	
+	//TODO:remove
 	public static void main(String[] args) throws Exception {
 		QServer.start();
 		Thread.sleep(10000);
@@ -39,10 +40,10 @@ public class QServer implements Runnable{
 			
 		}
 	}
-	/**Starts the server
-	 * @throws 
+	/** Starts the server
+	 * @throws Exception
 	 */
-	public static void start(){
+	public static void start() throws Exception{
 		if (mainThread!=null && mainThread.isAlive()) {
 			log.info("Server is already alive");
 		} else {
@@ -79,10 +80,11 @@ public class QServer implements Runnable{
 					log.info("Server is running");
 				} catch (Exception e) {
 					log.log(Level.SEVERE, "Failed to start server", e);
+					throw e;
 				}
 		}
 	}
-	
+	/**Stops the server*/
 	public static void stop() throws InterruptedException{
 		log.info("Stopping server");
 		mainThread.interrupt();
@@ -103,6 +105,10 @@ public class QServer implements Runnable{
 		}
 		mainThread.join();
 		log.info("Server stopped");
+	}
+	
+	public static boolean isAlive() {
+		return mainThread.isAlive();
 	}
 	
 	private static QueryExecutor queryExecutor;

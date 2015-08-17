@@ -49,4 +49,7 @@ public class QRequest implements Serializable{
 	private List<String> body;
 	
 	private static final long serialVersionUID = 931744542496010038L;
+	
+	public static final int ERROR_CODE = 500;
+	public static final int OK_CODE = 200;
 }

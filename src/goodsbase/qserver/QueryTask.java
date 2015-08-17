@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  * 
  * @author Daria
  */
-public class QueryTask implements ResultDbTask, AutoCloseable {
+class QueryTask implements ResultDbTask, AutoCloseable {
 
 	/**@throws UnacceptableRequestException in case of invalid request*/
 	public QueryTask(QRequest request) {

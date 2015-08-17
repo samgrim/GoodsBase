@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamWriter;
  * @author Daria
  *
  */
-public class QueryHandler implements Runnable {
+class QueryHandler implements Runnable {
 
 	/**
 	 * @param socket - connected socket

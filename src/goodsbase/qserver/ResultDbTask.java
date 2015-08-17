@@ -7,7 +7,7 @@ import java.sql.ResultSet;
  * 
  * @author Daria
  */
-public interface ResultDbTask extends DbTask {
+interface ResultDbTask extends DbTask {
 	/**
 	 * @return ResultSet that has been created during execute() or null if
 	 *         DbTask has not been executed yet or if execute() has not created

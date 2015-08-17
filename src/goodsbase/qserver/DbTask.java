@@ -7,7 +7,7 @@ import java.sql.Connection;
  * 
  * @author Daria
  */
-public interface DbTask {
+interface DbTask {
 
 	/**
 	 * Executes task
