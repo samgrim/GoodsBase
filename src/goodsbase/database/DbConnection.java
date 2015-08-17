@@ -15,13 +15,6 @@ import java.util.logging.Logger;
  * Contains method that creates a new connection using database settings*/
 public class DbConnection {
 	
-	private static String url;
-	private static String driverClass;
-	
-	private static final String propResName = "/database.properties";
-	
-	private static final Logger log = Logger.getLogger(DbConnection.class.getName());
-	
 	/**Reads database settings from properties file and applies them.
 	 * @throws DbInitException*/
 	public static void init() throws DbInitException{		
@@ -66,6 +59,7 @@ public class DbConnection {
 	public static Connection getConnection() throws SQLException{
 		return DriverManager.getConnection(url);
 	}
+	
 	/*Creates tables within a single transaction*/
 	private static void createTables() throws DbInitException{
 		Connection conn = null;
@@ -119,10 +113,16 @@ public class DbConnection {
 			} catch (SQLException e) {
 				log.log(Level.WARNING, "Failed to close connection", e);
 			}
-		}
-		
-		
+		}				
 	}
 	
+	
+	private static String url;
+	
+	private static String driverClass;
+	
+	private static final String propResName = "/database.properties";
+	
+	private static final Logger log = Logger.getLogger(DbConnection.class.getName());
 
 }
