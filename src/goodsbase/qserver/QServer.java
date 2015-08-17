@@ -58,12 +58,13 @@ public class QServer implements Runnable{
 					queryExecutor = new QueryExecutor(dbConnection);
 					queryExecThread = new Thread(queryExecutor);
 					queryExecThread.start();
-					log.info("Query executor service is running");
-					log.info("Binding to the port " + port);
+					log.info("Creating thread pool for clients requests");
+					clientPool = Executors.newCachedThreadPool();
+					log.info("Binding to the port " + PORT);
 					try{
-						serverSocket = new ServerSocket(port);
+						serverSocket = new ServerSocket(PORT);
 					} catch (IOException e0) {
-						log.log(Level.WARNING, "Failed to bind on port " + port, e0);
+						log.log(Level.WARNING, "Failed to bind on port " + PORT, e0);
 						log.info("Stopping services");
 						try {
 							dbConnection.close();
@@ -72,6 +73,7 @@ public class QServer implements Runnable{
 						}
 						queryExecThread.interrupt();
 						queryExecThread.join();
+						clientPool.shutdown();
 						log.info("Server stopped");
 						throw e0;
 					}
@@ -87,6 +89,7 @@ public class QServer implements Runnable{
 	/**Stops the server*/
 	public static void stop() throws InterruptedException{
 		log.info("Stopping server");
+		clientPool.shutdown();
 		mainThread.interrupt();
 		log.info("Stopping services");
 		queryExecThread.interrupt();
@@ -103,7 +106,7 @@ public class QServer implements Runnable{
 		} catch (IOException e) {
 			log.log(Level.WARNING, "Exception caught when closing server socket", e);
 		}
-		mainThread.join();
+		mainThread.join();		
 		log.info("Server stopped");
 	}
 	
@@ -115,10 +118,10 @@ public class QServer implements Runnable{
 	private static Thread mainThread;
 	private static Thread queryExecThread;
 	private static ServerSocket serverSocket;
-	private static ExecutorService clientPool = Executors.newCachedThreadPool();
+	private static ExecutorService clientPool;
 	private static Connection dbConnection;
 	private static final Logger log =Logger.getLogger(QServer.class.getName());	
 	
 	//TODO: make properties
-	private static final int port = 8382;
+	public static final int PORT = 8382;
 }
