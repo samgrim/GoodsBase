@@ -1,5 +1,8 @@
 package goodsbase;
 
+import goodsbase.qserver.QServer;
+import goodsbase.ui.MainWindow;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -9,25 +12,20 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import goodsbase.database.DbConnection;
-import goodsbase.ui.MainWindow;
-
 public class Main {
 	
 	private static final String loggingProps = "/logging.properties";
 	
 	private static final Logger log = Logger.getLogger(Main.class.getName());
 	
-	public static void main(String[] args) throws Exception, IOException {
+	public static void main(String[] args) {
 		initLogger();
 		setLookAndFeel();
 		
-		try {	
-			DbConnection.init();
+		try {
+			QServer.start();
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "Failed to start application", e);
-			JOptionPane.showMessageDialog(null, "Failed to launch application.\n" 
-					+ e.getMessage(), "Launch failed", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Failed to start server");
 			System.exit(1);
 		}
 			
