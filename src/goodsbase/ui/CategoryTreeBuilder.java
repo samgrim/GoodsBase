@@ -1,13 +1,13 @@
 package goodsbase.ui;
 
+import goodsbase.model.Category;
+import goodsbase.model.DataLoadException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,11 +18,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-import goodsbase.model.Category;
-import goodsbase.model.DataLoadException;
-import goodsbase.model.DataLoader;
-import goodsbase.model.Warehouse;
 
 
 /**Category tree widget
