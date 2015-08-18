@@ -111,7 +111,9 @@ public class QServer implements Runnable{
 	}
 	
 	public static boolean isAlive() {
-		return mainThread.isAlive();
+		if(mainThread != null)
+			return mainThread.isAlive();
+		return false;
 	}
 	
 	private static QueryExecutor queryExecutor;
