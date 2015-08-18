@@ -46,8 +46,8 @@ class QueryTask implements ResultDbTask, AutoCloseable {
 	public boolean isComplete() {
 		return complete;
 	}
-	
-	/**Returns the list of exceptions occurred during execution*/
+
+	@Override
 	public List<SQLException> getExceptions() {
 		return exceptions;
 	}
