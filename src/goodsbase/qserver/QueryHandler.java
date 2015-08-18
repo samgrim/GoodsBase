@@ -47,6 +47,9 @@ class QueryHandler implements Runnable {
 			case SELECT:
 				processSelect(request);
 				break;
+			case UPDATE:
+				processUpdate(request);
+				break;
 			default:
 				break;
 			}
@@ -58,6 +61,21 @@ class QueryHandler implements Runnable {
 		}
 	}
 	
+	private void processUpdate(QRequest request) {
+		UpdateTask task = new UpdateTask(request);
+		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) {	// out will be closed automatically
+			executeTask(task);
+			if(task.getExceptions().size() == 0) {
+				out.write(String.valueOf(QRequest.OK_CODE));
+			} else {
+				out.write(String.valueOf(QRequest.ERROR_CODE));
+			}
+			out.close();
+		} catch (IOException e) {
+			log.log(Level.WARNING,"Exception caught during request processing", e);
+		} 
+	}
+
 	private void processSelect(QRequest request) {
 		QueryTask task = new QueryTask(request);
 		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) {	// out will be closed automatically
