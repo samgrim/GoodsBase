@@ -29,7 +29,7 @@ public class QRequest implements Serializable{
 	/**Adds query to request
 	 * @return false if request doesn't allow more queries*/
 	public boolean addQuery(String query){
-		if(type == Type.SELECT&&getQueryNumber()==1)
+		if((type == Type.SELECT||type == Type.UPDATE)&&getQueryNumber()==1)
 			return false;
 		body.add(query);
 		return true;
