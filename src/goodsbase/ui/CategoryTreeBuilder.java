@@ -17,6 +17,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 
@@ -38,7 +41,8 @@ public class CategoryTreeBuilder {
 			}
 			
 			/*pop-up messages*/
-			tree = new JTree(root){
+			DefaultTreeModel model = new DefaultTreeModel(root);
+			tree = new JTree(model){
 				@Override
 				public String getToolTipText(MouseEvent e) {	 
 					TreePath p = getPathForLocation(e.getX(), e.getY());
@@ -54,7 +58,7 @@ public class CategoryTreeBuilder {
 			tree.setToolTipText("");
 			
 			/*pop-up menu*/
-			final JPopupMenu treeNodeMenu = getPopupMenu(tree);
+			final JPopupMenu treeNodeMenu = getPopupMenu(tree, model);
 			MouseAdapter ma = new MouseAdapter() {
 				private void myPopupEvent(MouseEvent e) {
 					int x = e.getX();
@@ -64,6 +68,14 @@ public class CategoryTreeBuilder {
 					if (path == null)
 						return;	
 					tree.setSelectionPath(path);
+					TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
+					JMenuItem deleteMenuItem = (JMenuItem)treeNodeMenu.getComponent(2);
+					/*can delete only leaves*/
+					if(node.isLeaf()) {						
+						deleteMenuItem.setEnabled(true);
+					} else {
+						deleteMenuItem.setEnabled(false);
+					}
 					treeNodeMenu.show(tree, x, y);
 				}
 				public void mousePressed(MouseEvent e) {
@@ -106,32 +118,37 @@ public class CategoryTreeBuilder {
 		
 	}
 	
-	private static Category getSelectedCategory(JTree tree) {
+	private static DefaultMutableTreeNode getSelectedNode(JTree tree) {
 		TreePath path = tree.getSelectionPath();
 		if(path == null) return null;
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
-		Object obj = node.getUserObject();
-		return (obj instanceof Category)? (Category)obj : null;
+		return node;
 	}
 	
 	/*pop-up menu listener*/
 	private static class TreeNodeMenuListener implements ActionListener{
 	
-		public TreeNodeMenuListener(JTree tree, JPopupMenu treeNodeMenu) {
+		public TreeNodeMenuListener(JTree tree, JPopupMenu treeNodeMenu, DefaultTreeModel model) {
 			this.tree = tree;
 			this.treeNodeMenu = treeNodeMenu;
+			this.model = model;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JMenuItem menuItem = (JMenuItem)e.getSource();
-			Category c = getSelectedCategory(tree);
+			DefaultMutableTreeNode node = getSelectedNode(tree);
+			Category c =  ((node.getUserObject() instanceof Category)? 
+					(Category)node.getUserObject() 
+					: null);
 			if(menuItem == treeNodeMenu.getComponent(0)) {
 				addAction(c);
 			} else if (menuItem == treeNodeMenu.getComponent(1)){
 				editAction(c);
 			} else if (menuItem == treeNodeMenu.getComponent(2)) {
-				removeAction(c);
+				if(c!=null) {
+					removeAction(c, node);
+				}
 			}
 		}
 		
@@ -143,19 +160,37 @@ public class CategoryTreeBuilder {
 			JOptionPane.showMessageDialog(null, c.getName(), "Edit menu action", JOptionPane.INFORMATION_MESSAGE);			
 		}
 		
-		private void removeAction(Category c) {
-			JOptionPane.showMessageDialog(null, c.getName(), "Remove menu action", JOptionPane.INFORMATION_MESSAGE);			
+		private void removeAction(Category c, DefaultMutableTreeNode node) {
+			int confirm = JOptionPane.showConfirmDialog(tree.getParent(), 
+					"Are you confident in deletion of category " + c + "?", "Delete category", JOptionPane.YES_NO_OPTION);
+			if(confirm == JOptionPane.YES_OPTION) {
+			String message;
+			try {
+				if(Category.delete(c)) {
+					message = "Category deleted";
+					model.removeNodeFromParent(node);
+				} else {
+					message = "Cannot delete category " + c;
+				}
+				JOptionPane.showMessageDialog(tree.getParent(), message, "Category delete", JOptionPane.INFORMATION_MESSAGE);		
+			} catch (DataLoadException e) {
+				JOptionPane.showMessageDialog(tree.getParent(), "Deletion produced an error. "
+						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
+				log.log(Level.WARNING, "Exception caught when deleting category", e);
+			}
+			}
 		}
 		
 		private JTree tree;
 		private JPopupMenu treeNodeMenu;
+		private DefaultTreeModel model;
 	}
 	
-	private static JPopupMenu getPopupMenu(JTree tree){
+	private static JPopupMenu getPopupMenu(JTree tree, DefaultTreeModel model){
 		/*Initializing popup menu for category tree*/
 		JPopupMenu treeNodeMenu = new JPopupMenu();
 		JMenuItem addChild = new JMenuItem("Add");
-		TreeNodeMenuListener listener = new TreeNodeMenuListener(tree, treeNodeMenu);
+		TreeNodeMenuListener listener = new TreeNodeMenuListener(tree, treeNodeMenu, model);
 		addChild.addActionListener(listener);
 		JMenuItem edit = new JMenuItem("Edit");
 		edit.addActionListener(listener);
