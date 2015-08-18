@@ -3,8 +3,9 @@ package goodsbase.model;
 import goodsbase.qserver.QRequest;
 import goodsbase.qserver.QServer;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -77,10 +78,10 @@ public class Category {
 		return name.hashCode()*prime;
 	}		
 	
-	/**Loads list of categories from server ordered by category id
+	/**Loads list of categories from server 
 	 * @throws DataLoadException 
 	 **/
-	public static List<Category> load() throws DataLoadException {		
+	public static Set<Category> load() throws DataLoadException {		
 		Document doc = DataLoader.load(getRequest());
 		try {
 			return parse(doc);
@@ -91,12 +92,12 @@ public class Category {
 	
 	private static QRequest getRequest() {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery("SELECT * FROM categories ORDER BY id;");
+		req.addQuery("SELECT * FROM categories;");
 		return req;
 	}
 	
-	private static List<Category> parse(Document doc) throws XPathExpressionException {
-		List<Category> cat = new ArrayList<Category>();
+	private static Set<Category> parse(Document doc) throws XPathExpressionException {
+		Set<Category> cat = new HashSet<Category>();
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList)xpath.evaluate("result/line", doc, XPathConstants.NODESET);
@@ -138,7 +139,7 @@ public class Category {
 	//TODO:remove
 	public static void main(String[] args) throws Exception {
 		QServer.start();
-		List<Category> cat = Category.load();
+		Set<Category> cat = Category.load();
 	
 		for(Category c:cat) {
 			System.out.println(c);
