@@ -78,21 +78,54 @@ public class Category {
 		return name.hashCode()*prime;
 	}		
 	
-	/**Loads list of categories from server 
+	/**Loads list of categories from server database
 	 * @throws DataLoadException 
 	 **/
 	public static Set<Category> load() throws DataLoadException {		
-		Document doc = DataLoader.load(getRequest());
+		Document doc = DataLoader.load(getSelectRequest());
 		try {
 			return parse(doc);
 		} catch (XPathExpressionException e) {
 			throw new DataLoadException(e);
 		}
 	}
+	/**Removes category from the server database
+	 * @throws DataLoadException 
+	 **/
+	public static boolean delete(Category cat) throws DataLoadException {
+		int res = DataLoader.execute(getDeleteRequest(cat));
+		if (res == QRequest.OK_CODE)
+			return true;
+		return false;
+	}
 	
-	private static QRequest getRequest() {
+	/**Updates category in the server database
+	 * @throws DataLoadException 
+	 **/
+	public static boolean update(Category cat) throws DataLoadException {
+		int res = DataLoader.execute(getUpdateRequest(cat));
+		if (res == QRequest.OK_CODE)
+			return true;
+		return false;
+	}
+	
+	private static QRequest getSelectRequest() {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery("SELECT * FROM categories;");
+		return req;
+	}
+	
+	private static QRequest getUpdateRequest(Category cat){
+		QRequest req = new QRequest(QRequest.Type.UPDATE);
+		req.addQuery("UPDATE categories SET name = '"+ cat.name 
+				+ "', description = '"+ cat.description
+				+"', parent_id = " + cat.parentId +";");
+		return req;
+	}
+	
+	private static QRequest getDeleteRequest(Category cat) {
+		QRequest req = new QRequest(QRequest.Type.UPDATE);
+		req.addQuery("DELETE FROM categories WHERE id = " + cat.id + ";");
 		return req;
 	}
 	
@@ -120,6 +153,8 @@ public class Category {
 		}
 		return cat;
 	}
+	
+	
 	
 	@Override
 	public boolean equals(Object obj) {
