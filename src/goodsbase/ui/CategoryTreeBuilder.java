@@ -30,73 +30,74 @@ import javax.swing.tree.TreePath;
 public class CategoryTreeBuilder {		
 	
 	public static JTree getTree() {
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-		JTree tree;
-		try {
-			Set<Category> categories = Category.load();
-			if(categories.size()>0) {
-				buildTree(categories, root);
-			} else {
-				root.setUserObject("Right-click to create the first category");
-			}
+			
+		DefaultTreeModel model = buildModel();
+		JTree tree = new JTree(model){
 			
 			/*pop-up messages*/
-			DefaultTreeModel model = new DefaultTreeModel(root);
-			tree = new JTree(model){
-				@Override
-				public String getToolTipText(MouseEvent e) {	 
-					TreePath p = getPathForLocation(e.getX(), e.getY());
-					if (p == null)
-						return null;
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
-					if(node.getUserObject() instanceof Category) {
-						Category c = (Category)node.getUserObject();
-						return c.getDescription();
-					} else return "";
-				}
-			};
-			tree.setToolTipText("");
+			@Override
+			public String getToolTipText(MouseEvent e) {	 
+				TreePath p = getPathForLocation(e.getX(), e.getY());
+				if (p == null)
+					return null;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
+				if(node.getUserObject() instanceof Category) {
+					Category c = (Category)node.getUserObject();
+					return c.getDescription();
+				} else return "";
+			}
+		};
+		tree.setToolTipText("");
 			
 			/*pop-up menu*/
-			final JPopupMenu treeNodeMenu = getPopupMenu(tree, model);
-			MouseAdapter ma = new MouseAdapter() {
-				private void myPopupEvent(MouseEvent e) {
-					int x = e.getX();
-					int y = e.getY();
-					JTree tree = (JTree)e.getSource();
-					TreePath path = tree.getPathForLocation(x, y);
-					if (path == null)
-						return;	
-					tree.setSelectionPath(path);
-					TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
-					JMenuItem deleteMenuItem = (JMenuItem)treeNodeMenu.getComponent(2);
-					/*can delete only leaves*/
-					if(node.isLeaf()) {						
-						deleteMenuItem.setEnabled(true);
-					} else {
-						deleteMenuItem.setEnabled(false);
-					}
-					treeNodeMenu.show(tree, x, y);
-				}
-				public void mousePressed(MouseEvent e) {
-					if (e.isPopupTrigger()) myPopupEvent(e);
-				}
-				public void mouseReleased(MouseEvent e) {
-					if (e.isPopupTrigger()) myPopupEvent(e);
-				}
-			};
+		final JPopupMenu treeNodeMenu = getPopupMenu(tree, model);
+		MouseAdapter ma = new MouseAdapter() {
 			
-			tree.addMouseListener(ma);
+			private void myPopupEvent(MouseEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+				JTree tree = (JTree)e.getSource();
+				TreePath path = tree.getPathForLocation(x, y);
+				if (path == null)
+					return;	
+				tree.setSelectionPath(path);
+				DefaultMutableTreeNode node = 
+						(DefaultMutableTreeNode)tree.getLastSelectedPathComponent();					
+				if(node.getUserObject()==ERROR_STRING)
+					return;
+					
+				JMenuItem deleteMenuItem = (JMenuItem)treeNodeMenu.getComponent(2);
+				/*can delete only leaves*/
+				if(node.isLeaf()) {						
+					deleteMenuItem.setEnabled(true);
+				} else {
+					deleteMenuItem.setEnabled(false);
+				}
+				treeNodeMenu.show(tree, x, y);
+			}
 			
-			if(categories.size() > 0) 
-				tree.setRootVisible(false);	
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) myPopupEvent(e);
+			}
 			
-		} catch (DataLoadException e1) {
-			log.log(Level.WARNING, "Failed to load categories", e1);
-			root.setUserObject("Failed to load categories");
-			tree = new JTree(root);
-		}
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) myPopupEvent(e);
+			}
+		};
+			
+		tree.addMouseListener(ma);
+			
+		if(model.getChildCount(model.getRoot()) > 0) 
+			tree.setRootVisible(false);	
+				
 		return tree;
+	}
+	
+	private static void refresh(JTree tree) {
+		DefaultTreeModel model = buildModel();
+		tree.setModel(model);
+		if(model.getChildCount(model.getRoot()) > 0) 
+			tree.setRootVisible(false);	
 	}
 	
 	/*Builds a tree of categories*/
@@ -116,6 +117,23 @@ public class CategoryTreeBuilder {
 			buildTree(categories, (DefaultMutableTreeNode)root.getChildAt(i));
 		}
 		
+	}
+	
+	private static DefaultTreeModel buildModel() {
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+		try {
+			Set<Category> categories = Category.load();
+			if(categories.size()>0) {
+				buildTree(categories, root);
+			} else {
+				root.setUserObject("Right-click to create the first category");
+			}
+		} catch (DataLoadException e1) {
+			log.log(Level.WARNING, ERROR_STRING, e1);
+			root.setUserObject(ERROR_STRING);
+		}
+		DefaultTreeModel model = new DefaultTreeModel(root);			
+		return model;
 	}
 	
 	private static DefaultMutableTreeNode getSelectedNode(JTree tree) {
@@ -203,4 +221,5 @@ public class CategoryTreeBuilder {
 	}
 	
 	private static final Logger log = Logger.getLogger(CategoryTreeBuilder.class.getName());
+	private static final String ERROR_STRING = "Failed to load categories";
 }
