@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -23,7 +24,8 @@ import javax.swing.tree.TreePath;
  */
 class CategoryTree extends JTree {
 
-	public CategoryTree() {
+	public CategoryTree(JFrame mainWindow) {
+		this.mainWindow = mainWindow;
 		this.setToolTipText("");
 		this.popupMenu = new TreePopupMenu();		
 		this.addMouseListener(new PopupMouseAdapter());
@@ -70,6 +72,14 @@ class CategoryTree extends JTree {
 	public TreePopupMenu getPopupMenu() {
 		return popupMenu;
 	}
+	
+	/**
+	 * @return the mainWindow
+	 */
+	public JFrame getMainWindow() {
+		return mainWindow;
+	}
+
 
 	/**Pop up menu for CategoryTree*/	
 	class TreePopupMenu extends JPopupMenu{		
@@ -181,9 +191,11 @@ class CategoryTree extends JTree {
 		}
 		
 	}
-	
+
 	private final TreePopupMenu popupMenu;
 	private DefaultTreeModel model;
+	
+	private JFrame mainWindow;
 	
 	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());
 	private static final String ERROR_STRING = "Failed to load categories";

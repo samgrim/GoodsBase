@@ -20,8 +20,6 @@ import javax.swing.SwingConstants;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
-import goodsbase.model.Warehouse;
-
 public class MainWindow {
 
 	private JFrame frmGoodsBase;
@@ -80,7 +78,7 @@ public class MainWindow {
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
-		JTree catTree = new CategoryTree();
+		JTree catTree = new CategoryTree(frmGoodsBase);
 		splitPane.setLeftComponent(catTree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);

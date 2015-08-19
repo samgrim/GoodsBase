@@ -10,10 +10,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 class CategoryTreeNodeMenuListener implements ActionListener {
@@ -41,7 +39,23 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 		}
 		
 		private void addAction(Category c){
-			JOptionPane.showMessageDialog(null, c.getName(), "Add menu action", JOptionPane.INFORMATION_MESSAGE);			
+			AddCategoryDialog dialog = new AddCategoryDialog(tree.getMainWindow(), c);
+			dialog.setVisible(true);
+			Category res = dialog.getResult();
+			String message;
+			try {
+				if(Category.insert(res)){
+					message = "Category inserted";
+					tree.refreshModel();
+				} else {
+					message = "Cannot insert category " + c;
+				}
+				JOptionPane.showMessageDialog(tree.getParent(), message, "Category insert", JOptionPane.INFORMATION_MESSAGE);		
+			} catch (DataLoadException e) {
+				JOptionPane.showMessageDialog(tree.getParent(), "Insertion produced an error. "
+						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
+				log.log(Level.WARNING, "Exception caught when inserting category", e);
+			}
 		}
 		
 		private void editAction(Category c){

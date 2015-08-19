@@ -4,7 +4,6 @@ import goodsbase.qserver.QRequest;
 import goodsbase.qserver.QServer;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.xpath.XPath;
@@ -23,6 +22,13 @@ public class Category {
 	private String name;
 	private String description;
 	private int parentId;
+	
+	public Category(Category parent, String name, String description) {
+		if(name == null) throw new  NullPointerException("Name can't be null");
+		this.parentId = parent.id;
+		this.name = name;
+		this.description = description;
+	}
 	
 	/**@throws NullPointerException if name == null*/
 	private Category(int id, int parentId, String name, String description) {
@@ -109,6 +115,13 @@ public class Category {
 		return false;
 	}
 	
+	public static boolean insert(Category cat) throws DataLoadException {
+		int res = DataLoader.execute(getInsertRequest(cat));
+		if (res == QRequest.OK_CODE)
+			return true;
+		return false;
+	}
+	
 	private static QRequest getSelectRequest() {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery("SELECT * FROM categories;");
@@ -126,6 +139,16 @@ public class Category {
 	private static QRequest getDeleteRequest(Category cat) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
 		req.addQuery("DELETE FROM categories WHERE id = " + cat.id + ";");
+		return req;
+	}
+	
+	private static QRequest getInsertRequest(Category cat) {
+		QRequest req = new QRequest(QRequest.Type.UPDATE);
+		req.addQuery("INSERT INTO categories (NAME, DESCRIPTION, PARENT_ID) VALUES('"
+				+ cat.getName() +
+				"', '" +cat.getDescription()+
+				"', '" +cat.getParentId()+
+				"');");
 		return req;
 	}
 	
@@ -182,6 +205,8 @@ public class Category {
 		cat = Category.load();
 		QServer.stop();
 	}
+
+
 	
 
 }
