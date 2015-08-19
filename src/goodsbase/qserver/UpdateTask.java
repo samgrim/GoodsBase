@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**Can execute UPDATE and DELETE requests
- * Executes only first query in the request
+/**Can execute UPDATE requests
+ * 
  * @author Daria
  */
 public class UpdateTask implements DbTask {
@@ -29,6 +29,7 @@ public class UpdateTask implements DbTask {
 		try { 			
 			stat = c.createStatement();
 			stat.executeUpdate(query);
+			stat.close();
 		} catch (SQLException e) {
 			exceptions.add(e);
 			log.log(Level.WARNING, "Exception caught while executing query", e);
@@ -41,7 +42,7 @@ public class UpdateTask implements DbTask {
 		return complete;
 	}
 	
-	/**Returns the list of exceptions occurred during execution*/
+	@Override
 	public List<SQLException> getExceptions() {
 		return exceptions;
 	}
