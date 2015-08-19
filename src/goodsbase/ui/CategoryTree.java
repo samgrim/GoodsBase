@@ -61,11 +61,11 @@ class CategoryTree extends JTree {
 	public void refreshModel() {
 		model = buildModel();
 		this.setModel(model);
-		if(model.getChildCount(model.getRoot()) > 0) 
+	/*	if(model.getChildCount(model.getRoot()) > 0) 
 			this.setRootVisible(false);	
 		else {
 			this.setRootVisible(true);
-		}
+		}*/
 	}
 	
 	/**@return pop up menu of the tree*/
@@ -133,9 +133,14 @@ class CategoryTree extends JTree {
 			CategoryTree.this.setSelectionPath(path);
 			DefaultMutableTreeNode node = 
 					(DefaultMutableTreeNode)CategoryTree.this.getLastSelectedPathComponent();					
-			if(node.getUserObject()==ERROR_STRING)
+			if(node.getUserObject()==ERROR_STRING) {
 				return;
-				
+				/*only categories are editable*/
+			} else if (node.getUserObject() instanceof String) {
+				popupMenu.editCategoryMenuItem.setEnabled(false);
+			} else {
+				popupMenu.editCategoryMenuItem.setEnabled(true);
+			}
 			/*can delete only leaves*/
 			if(node.isLeaf()) {						
 				popupMenu.removeCategoryMenuItem.setEnabled(true);
@@ -163,6 +168,7 @@ class CategoryTree extends JTree {
 			Set<Category> categories = Category.load();
 			if(categories.size()>0) {
 				buildTree(categories, root);
+				root.setUserObject("Categories");
 			} else {
 				root.setUserObject("Right-click to create the first category");
 			}
