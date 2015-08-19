@@ -6,6 +6,7 @@ import goodsbase.model.DataLoadException;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ import javax.swing.tree.TreePath;
  * @author Daria
  */
 class CategoryTree extends JTree {
-
+	
 	public CategoryTree(JFrame mainWindow) {
 		this.mainWindow = mainWindow;
 		this.setToolTipText("");
@@ -61,6 +62,7 @@ class CategoryTree extends JTree {
 	public void refreshModel() {
 		model = buildModel();
 		this.setModel(model);
+		this.setExpandedState(this.getPathForRow(0), true);
 	/*	if(model.getChildCount(model.getRoot()) > 0) 
 			this.setRootVisible(false);	
 		else {

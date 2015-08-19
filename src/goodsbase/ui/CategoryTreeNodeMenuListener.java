@@ -30,16 +30,17 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 			if(menuItem == tree.getPopupMenu().getAddCategoryMenuItem()) {
 				addAction(c);
 			} else if (menuItem == tree.getPopupMenu().getEditCategoryMenuItem()){
-				editAction(c);
+				editAction(c, node);
 			} else if (menuItem == tree.getPopupMenu().getRemoveCategoryMenuItem()) {
-				if(c!=null) {
-					removeAction(c, node);
-				}
+				removeAction(c, node);
 			}
 		}
 		
 		private void addAction(Category c){
-			AddCategoryDialog dialog = new AddCategoryDialog(tree.getMainWindow(), c);
+			EditCategoryDialog dialog = null;
+			try { //does not throw in insert mode
+				dialog = new EditCategoryDialog(tree.getMainWindow(), c, EditCategoryDialog.INSERT_MODE);
+			} catch (DataLoadException e1) {}
 			dialog.setVisible(true);
 			Category res = dialog.getResult();
 			String message;
@@ -58,8 +59,26 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 			}
 		}
 		
-		private void editAction(Category c){
-			JOptionPane.showMessageDialog(null, c.getName(), "Edit menu action", JOptionPane.INFORMATION_MESSAGE);			
+		private void editAction(Category c, DefaultMutableTreeNode node){
+			try { 
+				EditCategoryDialog dialog = new EditCategoryDialog(tree.getMainWindow(), c, EditCategoryDialog.EDIT_MODE);				
+				dialog.setVisible(true);
+				Category res = dialog.getResult();
+				String message;
+				
+				if(Category.update(res)){
+					message = "Category updated";
+					node.setUserObject(res);
+				} else {
+					message = "Cannot update category " + c;
+				}
+				JOptionPane.showMessageDialog(tree.getParent(), message, "Category update", JOptionPane.INFORMATION_MESSAGE);
+				tree.refreshModel();
+			} catch (DataLoadException e) {
+				JOptionPane.showMessageDialog(tree.getParent(), "Update produced an error. "
+						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
+				log.log(Level.WARNING, "Exception caught when updating category", e);
+			}		
 		}
 		
 		private void removeAction(Category c, DefaultMutableTreeNode node) {
