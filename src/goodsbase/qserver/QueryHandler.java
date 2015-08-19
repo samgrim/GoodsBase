@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -87,6 +86,7 @@ class QueryHandler implements Runnable {
 				//TODO: response must be ready before writing
 				try {
 					writeResponse(task.getResult(), socket.getOutputStream());
+					task.close();
 				} catch (XMLStreamException | SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
