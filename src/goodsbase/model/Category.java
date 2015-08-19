@@ -3,6 +3,7 @@ package goodsbase.model;
 import goodsbase.qserver.QRequest;
 import goodsbase.qserver.QServer;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,16 @@ import org.w3c.dom.NodeList;
 /**Describes category of goods*/
 public class Category {
 	
+	public static final Comparator<Category> BY_NAME = new Comparator<Category>(){
+
+		@Override
+		public int compare(Category o1, Category o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+		
+	};
+	
+	
 	private int id;
 	private String name;
 	private String description;
@@ -25,7 +36,8 @@ public class Category {
 	
 	public Category(Category parent, String name, String description) {
 		if(name == null) throw new  NullPointerException("Name can't be null");
-		this.parentId = parent.id;
+		if(parent != null)
+			this.parentId = parent.id;
 		this.name = name;
 		this.description = description;
 	}
@@ -70,6 +82,17 @@ public class Category {
 	
 	public int getId(){
 		return this.id;
+	}
+	/**Sets parent for this category.
+	 * if parent equals to this, does nothing*/
+	public void setParent(Category parent) {
+		if(parent == null) {
+			this.parentId = 0;
+		} else if(this.id==parent.id) {
+			return;
+		} else {
+			this.parentId = parent.id;
+		}
 	}
 	
 	/**@return name of the category*/
@@ -132,7 +155,8 @@ public class Category {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
 		req.addQuery("UPDATE categories SET name = '"+ cat.name 
 				+ "', description = '"+ cat.description
-				+"', parent_id = " + cat.parentId +";");
+				+"', parent_id = " + cat.parentId
+				+" WHERE id = "+ cat.id +";");
 		return req;
 	}
 	
