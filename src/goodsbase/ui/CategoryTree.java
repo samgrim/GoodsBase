@@ -29,6 +29,9 @@ class CategoryTree extends JTree {
 	
 	public CategoryTree(JFrame mainWindow) {
 		this.mainWindow = mainWindow;
+		/*disable double-click expand*/
+		this.setToggleClickCount(0);
+		
 		this.setToolTipText("");
 		this.popupMenu = new TreePopupMenu();		
 		this.addMouseListener(new CategoryTreeMouseAdapter(this));
