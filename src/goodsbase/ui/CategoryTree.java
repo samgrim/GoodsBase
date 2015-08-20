@@ -25,11 +25,13 @@ import javax.swing.tree.TreePath;
  */
 class CategoryTree extends JTree {
 	
+	public static final String ERROR_STRING = "Failed to load categories";
+	
 	public CategoryTree(JFrame mainWindow) {
 		this.mainWindow = mainWindow;
 		this.setToolTipText("");
 		this.popupMenu = new TreePopupMenu();		
-		this.addMouseListener(new PopupMouseAdapter());
+		this.addMouseListener(new CategoryTreeMouseAdapter(this));
 		this.refreshModel();
 		ActionListener listener = new CategoryTreeNodeMenuListener(this);
 		this.popupMenu.addMenuListenerToAllItems(listener);
@@ -124,45 +126,6 @@ class CategoryTree extends JTree {
 	}
 	
 	
-	private class PopupMouseAdapter extends MouseAdapter{
-		private void myPopupEvent(MouseEvent e) {
-			int x = e.getX();
-			int y = e.getY();
-			
-			TreePath path = CategoryTree.this.getPathForLocation(x, y);
-			if (path == null)
-				return;	
-			CategoryTree.this.setSelectionPath(path);
-			DefaultMutableTreeNode node = 
-					(DefaultMutableTreeNode)CategoryTree.this.getLastSelectedPathComponent();					
-			if(node.getUserObject()==ERROR_STRING) {
-				return;
-				/*only categories are editable*/
-			} else if (node.getUserObject() instanceof String) {
-				popupMenu.editCategoryMenuItem.setEnabled(false);
-			} else {
-				popupMenu.editCategoryMenuItem.setEnabled(true);
-			}
-			/*can delete only leaves*/
-			if(node.isLeaf()) {						
-				popupMenu.removeCategoryMenuItem.setEnabled(true);
-			} else {
-				popupMenu.removeCategoryMenuItem.setEnabled(false);
-			}
-			popupMenu.show(CategoryTree.this, x, y);
-		}
-		
-		@Override
-		public void mousePressed(MouseEvent e) {
-			if (e.isPopupTrigger()) myPopupEvent(e);
-		}
-		
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if (e.isPopupTrigger()) myPopupEvent(e);
-		}
-	}
-	
 	/*creates a new model for the tree*/
 	private static DefaultTreeModel buildModel() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -206,7 +169,7 @@ class CategoryTree extends JTree {
 	private JFrame mainWindow;
 	
 	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());
-	private static final String ERROR_STRING = "Failed to load categories";
+	
 	
 	/**
 	 * 
