@@ -80,7 +80,7 @@ public class DbConnection {
 					+ "DESCRIPTION TEXT,"
 					+ "MANUFACTURER TEXT,"
 					+ "TRADE_MARK TEXT,"
-					+ "CATEGORY_ID INTEGER,"
+					+ "CATEGORY_ID INTEGER NOT NULL,"
 					+ "CONSTRAINT unq UNIQUE (NAME, MANUFACTURER, TRADE_MARK));");
 			stat.executeUpdate("CREATE table IF NOT EXISTS WH_ITEMS ("
 					+ "ID INTEGER PRIMARY KEY,"
