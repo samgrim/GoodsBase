@@ -43,6 +43,7 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 			} catch (DataLoadException e1) {}
 			dialog.setVisible(true);
 			Category res = dialog.getResult();
+			if(res == null) return;
 			String message;
 			try {
 				if(Category.insert(res)){
@@ -64,8 +65,8 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 				EditCategoryDialog dialog = new EditCategoryDialog(tree.getMainWindow(), c, EditCategoryDialog.EDIT_MODE);				
 				dialog.setVisible(true);
 				Category res = dialog.getResult();
+				if(res == null) return;
 				String message;
-				
 				if(Category.update(res)){
 					message = "Category updated";
 					node.setUserObject(res);
