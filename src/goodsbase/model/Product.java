@@ -1,9 +1,8 @@
 package goodsbase.model;
 
-import goodsbase.database.Category;
 
 /**Describes good*/
-public class Good {
+public class Product {
 
 	private String name;
 	private String description;
@@ -12,7 +11,7 @@ public class Good {
 	private String tradeMark;
 	
 	/**@throws NullPointerException if name, manufacturer or category is null*/
-	public Good(String name, String tradeMark, Manufacturer manufacturer, Category category) {
+	public Product(String name, String tradeMark, Manufacturer manufacturer, Category category) {
 		if(name == null) throw new  NullPointerException("Name can't be null");
 		if(manufacturer == null) throw new  NullPointerException("Manufacturer can't be null");
 		if(category == null) throw new  NullPointerException("Category can't be null");
@@ -99,7 +98,7 @@ public class Good {
 		if (getClass() != obj.getClass())
 			return false;
 		
-		Good other = (Good) obj;
+		Product other = (Product) obj;
 		if (!category.equals(other.category))
 			return false;
 		if (!manufacturer.equals(other.manufacturer))
