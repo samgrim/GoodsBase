@@ -19,10 +19,10 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+import javax.swing.JTable;
 
 public class MainWindow {
 
-	private JFrame frmGoodsBase;
 
 	/**
 	 * Launch the application.
@@ -78,18 +78,30 @@ public class MainWindow {
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
-		JTree catTree = new CategoryTree(frmGoodsBase);
+		catTree = new CategoryTree(frmGoodsBase);
 		splitPane.setLeftComponent(catTree);
+		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree));
+		catTree.getPopupMenu()
+			.addMenuListenerToAllItems(new CategoryTreeNodeMenuListener(catTree));
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		splitPane.setRightComponent(tabbedPane);
+		//productTable = new JTable();
+		//productTable = new ProductTable().getTable();
+	//	splitPane.setRightComponent(productTable);
+		
+//		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+//		splitPane.setRightComponent(tabbedPane);
 		
 		JPanel statusBar = new JPanel();
 		frmGoodsBase.getContentPane().add(statusBar, BorderLayout.SOUTH);
 		
-		JToolBar toolBar = new JToolBar();
-		frmGoodsBase.getContentPane().add(toolBar, BorderLayout.NORTH);
-		frmGoodsBase.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{frmGoodsBase.getContentPane()}));
+//		JToolBar toolBar = new JToolBar();
+//		frmGoodsBase.getContentPane().add(toolBar, BorderLayout.NORTH);
+//		frmGoodsBase.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{frmGoodsBase.getContentPane()}));
 	}
+	
+
+	private JFrame frmGoodsBase;
+	private JTable productTable;
+	private CategoryTree catTree;
 
 }

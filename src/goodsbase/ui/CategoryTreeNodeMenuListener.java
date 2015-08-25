@@ -40,7 +40,7 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 		}
 		
 		private void addProductAction(Category c) {
-			EditProductDialog dialog = EditProductDialog.getAddDialog(c);
+			EditProductDialog dialog = EditProductDialog.getAddDialog(tree.getMainWindow(), c);
 			dialog.setVisible(true);
 			Product res = dialog.getResult();
 			if(res == null) return;

@@ -51,15 +51,18 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 * @throws DataLoadException in EDIT_MODE only
 	 */
-	public EditCategoryDialog(Frame container, Category category, int mode) throws DataLoadException {
-		super(container);
+	public EditCategoryDialog(Frame owner, Category category, int mode) throws DataLoadException {
+		super(owner);
 		this.mode = mode;
 		this.category = category;
 		setModal(true);
-		
+		setSize(450, 300);
+		setLocation((int)owner.getLocation().getX()+owner.getWidth()/4,
+				(int)owner.getLocation().getY()+owner.getHeight()/4);		
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(EditCategoryDialog.class.getResource("/Coin - Stacks (Silver)_24x24.gif")));
-		setBounds(100, 100, 450, 300);
+		//setBounds(100, 100, 450, 300);
+		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

@@ -32,10 +32,10 @@ class CategoryTree extends JTree {
 		
 		this.setToolTipText("");
 		this.popupMenu = new TreePopupMenu();		
-		this.addMouseListener(new CategoryTreeMouseAdapter(this));
+		//this.addMouseListener(new CategoryTreeMouseAdapter(this));
 		this.refreshModel();
-		ActionListener listener = new CategoryTreeNodeMenuListener(this);
-		this.popupMenu.addMenuListenerToAllItems(listener);
+		//ActionListener listener = new CategoryTreeNodeMenuListener(this);
+	//	this.popupMenu.addMenuListenerToAllItems(listener);
 	}
 	
 /*	@Override

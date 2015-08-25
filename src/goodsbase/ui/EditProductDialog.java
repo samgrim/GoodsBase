@@ -8,6 +8,7 @@ import goodsbase.util.Loaders;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -44,10 +45,10 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog for adding new product
 	 */
-	public static EditProductDialog getAddDialog(Category cat) {
+	public static EditProductDialog getAddDialog(Frame owner, Category cat) {
 		EditProductDialog dialog = null;
 		try {
-			dialog = new EditProductDialog(INSERT_MODE, cat, null);
+			dialog = new EditProductDialog(owner, INSERT_MODE, cat, null);
 		} catch (DataLoadException e) {}	//will be never thrown
 		return dialog;
 	}
@@ -56,8 +57,8 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	 * Create the dialog for editing existing product
 	 * @throws DataLoadException 
 	 */
-	public static EditProductDialog getEditDialog(Product prod) throws DataLoadException {
-		return new EditProductDialog(EDIT_MODE, null, prod);
+	public static EditProductDialog getEditDialog(Frame owner, Product prod) throws DataLoadException {
+		return new EditProductDialog(owner, EDIT_MODE, null, prod);
 	}
 	
 	public Product getResult(){
@@ -93,17 +94,20 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	}
 
 	
-	private EditProductDialog(int mode, Category cat, Product prod) throws DataLoadException {
+	private EditProductDialog(Frame owner, int mode, Category cat, Product prod) throws DataLoadException {
+		super(owner);
 		this.mode = mode;
 		this.category = cat;
 		this.prod = prod;
-		
+		setSize(450, 300);
+		setLocation((int)owner.getLocation().getX()+owner.getWidth()/4,
+				(int)owner.getLocation().getY()+owner.getHeight()/4);		
 	
 		setModal(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(EditProductDialog.class.getResource("/Coin - Stacks (Silver)_24x24.gif")));
 		setTitle("Add a new product");
 		setResizable(false);
-		setBounds(100, 100, 450, 300);
+		//setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
