@@ -2,6 +2,7 @@ package goodsbase.ui;
 
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
+import goodsbase.util.Loaders;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -55,7 +56,7 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 		this.mode = mode;
 		this.category = category;
 		setModal(true);
-		setTitle("Add a new category");
+		
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(EditCategoryDialog.class.getResource("/Coin - Stacks (Silver)_24x24.gif")));
 		setBounds(100, 100, 450, 300);
@@ -75,7 +76,8 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 			default:
 			case EDIT_MODE:
 				//TODO: optimize
-				Category[] cats = getSortedByNameCategories();
+				setTitle("Edit category");
+				Category[] cats = Loaders.getSortedByNameCategories();
 				JComboBox<Category> catBox = new JComboBox<Category>(cats);
 				catBox.addItem(null);
 				catBox.setSelectedIndex(
@@ -85,6 +87,7 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 				description.setText(category.getDescription());
 				break;
 			case INSERT_MODE:
+				setTitle("Add a new category");
 				parentCat = new JLabel("");
 				//display parent if only it exists
 				if(category == null){
@@ -179,13 +182,6 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 	
 	public Category getResult(){
 		return result;
-	}
-	
-	private static Category[] getSortedByNameCategories() throws DataLoadException{		 
-			Set<Category> cats = Category.load();
-			Category[] catsArr = cats.toArray(new Category[0]);
-			Arrays.sort(catsArr, Category.BY_NAME);
-			return catsArr;			
 	}
 	
 	/*TODO: get rid of this..*/
