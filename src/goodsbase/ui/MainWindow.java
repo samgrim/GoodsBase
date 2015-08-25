@@ -78,15 +78,16 @@ public class MainWindow {
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
+		productTable = new JTable();
+		splitPane.setRightComponent(productTable);
+		
 		catTree = new CategoryTree(frmGoodsBase);
 		splitPane.setLeftComponent(catTree);
-		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree));
+		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree, productTable));
 		catTree.getPopupMenu()
 			.addMenuListenerToAllItems(new CategoryTreeNodeMenuListener(catTree));
 		
-		//productTable = new JTable();
-		//productTable = new ProductTable().getTable();
-	//	splitPane.setRightComponent(productTable);
+	
 		
 //		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 //		splitPane.setRightComponent(tabbedPane);

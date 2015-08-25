@@ -1,16 +1,24 @@
 package goodsbase.ui;
 
+import goodsbase.model.Category;
+import goodsbase.model.DataLoadException;
+import goodsbase.util.Loaders;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.xpath.XPathExpressionException;
 
 class CategoryTreeMouseAdapter extends MouseAdapter{
 
-	public CategoryTreeMouseAdapter(CategoryTree tree) {
+	public CategoryTreeMouseAdapter(CategoryTree tree, JTable table) {
 		this.tree = tree;
+		this.table = table;
 	}
 	
 	private void myPopupEvent(MouseEvent e) {
@@ -48,7 +56,29 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		if (e.isPopupTrigger()) myPopupEvent(e);
 		/*double-click action*/
 		else if (e.getClickCount() ==2) {
-			JOptionPane.showMessageDialog(tree.getParent(), "double click");
+			DefaultMutableTreeNode node = 
+				(DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent();
+			if(node.getUserObject() instanceof Category) {
+				DefaultTableModel tableModel;
+				try {
+					String[] colomns = {"Name", "Trade Mark", "Manufacturer", "Positions available in warehouse"};
+					tableModel = new DefaultTableModel(Loaders.getProductsAsArray((Category)node.getUserObject()), colomns){
+						
+						@Override
+						    public boolean isCellEditable(int row, int column) {
+						       //all cells false
+						       return false;
+						    }
+				
+						private static final long serialVersionUID = 2901615843314533198L;
+					};	
+					
+				} catch (XPathExpressionException | DataLoadException e1) {
+					tableModel = new DefaultTableModel();
+					JOptionPane.showMessageDialog(tree.getParent(), "Failed to load products");
+				}
+				table.setModel(tableModel);
+			}
 		}
 	}
 		
@@ -58,5 +88,6 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 	}
 	
 	private CategoryTree tree;
+	private JTable table;
 
 }
