@@ -4,9 +4,7 @@ import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -95,9 +93,11 @@ class CategoryTree extends JTree {
 			addCategoryMenuItem =  new JMenuItem("Add Category");
 			editCategoryMenuItem = new JMenuItem("Edit Category");
 			removeCategoryMenuItem = new JMenuItem("Remove Category");
+			addProductMenuItem = new JMenuItem("Add Product");
 			this.add(addCategoryMenuItem);
 			this.add(editCategoryMenuItem);
 			this.add(removeCategoryMenuItem);
+			this.add(addProductMenuItem);
 		}
 	
 		public JMenuItem getAddCategoryMenuItem() {
@@ -110,17 +110,23 @@ class CategoryTree extends JTree {
 		
 		public JMenuItem getRemoveCategoryMenuItem() {
 			return removeCategoryMenuItem;
-		}
+		}		
 		
+		public JMenuItem getAddProductMenuItem() {
+			return addProductMenuItem;
+		}
+
 		public void addMenuListenerToAllItems(ActionListener listener) {
 			addCategoryMenuItem.addActionListener(listener);
 			editCategoryMenuItem.addActionListener(listener);
 			removeCategoryMenuItem.addActionListener(listener);
+			addProductMenuItem.addActionListener(listener);
 		}
 
 		private final JMenuItem addCategoryMenuItem;
 		private final JMenuItem editCategoryMenuItem;
 		private final JMenuItem removeCategoryMenuItem;
+		private final JMenuItem addProductMenuItem;
 		
 		/**
 		 * 

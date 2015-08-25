@@ -2,6 +2,7 @@ package goodsbase.ui;
 
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
+import goodsbase.model.Product;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,15 +29,38 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 					(Category)node.getUserObject() 
 					: null);
 			if(menuItem == tree.getPopupMenu().getAddCategoryMenuItem()) {
-				addAction(c);
+				addCategoryAction(c);
 			} else if (menuItem == tree.getPopupMenu().getEditCategoryMenuItem()){
 				editAction(c, node);
 			} else if (menuItem == tree.getPopupMenu().getRemoveCategoryMenuItem()) {
 				removeAction(c, node);
+			} else if(menuItem == tree.getPopupMenu().getAddProductMenuItem()) {
+				addProductAction(c);
 			}
 		}
 		
-		private void addAction(Category c){
+		private void addProductAction(Category c) {
+			EditProductDialog dialog = EditProductDialog.getAddDialog(c);
+			dialog.setVisible(true);
+			Product res = dialog.getResult();
+			if(res == null) return;
+			String message;
+			try {
+				if(Product.insert(res)){
+					message = "Product succesfully added";
+					tree.refreshModel();
+				} else {
+					message = "Cannot add product" + c;
+				}
+				JOptionPane.showMessageDialog(tree.getParent(), message, "Add Product", JOptionPane.INFORMATION_MESSAGE);		
+			} catch (DataLoadException e) {
+				JOptionPane.showMessageDialog(tree.getParent(), "Insertion produced an error. "
+						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
+				log.log(Level.WARNING, "Exception caught when inserting category", e);
+			}
+		}
+
+		private void addCategoryAction(Category c){
 			EditCategoryDialog dialog = null;
 			try { //does not throw in insert mode
 				dialog = new EditCategoryDialog(tree.getMainWindow(), c, EditCategoryDialog.INSERT_MODE);
@@ -47,10 +71,10 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 			String message;
 			try {
 				if(Category.insert(res)){
-					message = "Category inserted";
+					message = "Category succesfully added";
 					tree.refreshModel();
 				} else {
-					message = "Cannot insert category " + c;
+					message = "Cannot add category " + c;
 				}
 				JOptionPane.showMessageDialog(tree.getParent(), message, "Category insert", JOptionPane.INFORMATION_MESSAGE);		
 			} catch (DataLoadException e) {
