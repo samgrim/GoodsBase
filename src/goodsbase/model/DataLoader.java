@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-class DataLoader {
+public class DataLoader {
 	
 	
 	/**Loads data from the server as an xml document
@@ -26,7 +26,7 @@ class DataLoader {
 			ObjectOutputStream out  = new ObjectOutputStream(s.getOutputStream());
 			out.writeObject(req);
 			Scanner in = new Scanner(s.getInputStream());
-			int result = Integer.valueOf(in.nextLine());
+			int result = Integer.valueOf(in.nextLine());			
 			if(result == QRequest.OK_CODE) {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();

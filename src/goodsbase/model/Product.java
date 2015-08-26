@@ -18,12 +18,7 @@ import goodsbase.qserver.QRequest;
 /**Describes product*/
 public class Product {
 
-	private int id;
-	private String name;
-	private String description;
-	private String manufacturer;
-	private Category category;
-	private String tradeMark;
+	
 	
 	/**@throws NullPointerException if name, manufacturer or category is null*/
 	public Product(String name, String description, String tradeMark, String manufacturer, Category category) {
@@ -96,9 +91,7 @@ public class Product {
 	/**@return name + trade mark*/
 	@Override
 	public String toString() {
-		String str = this.name;
-		if (this.tradeMark != null) str += " " + tradeMark;
-		return str;
+		return this.name;
 	}
 
 	/*description is not included*/
@@ -180,10 +173,20 @@ public class Product {
 		return false;
 	}
 	
+	public static Product parse(XPath xpath, Node n, Category cat) throws NumberFormatException, XPathExpressionException{		
+		Product p = new Product(Integer.valueOf(xpath.evaluate("ID", n)),
+					xpath.evaluate("NAME", n),
+					xpath.evaluate("DESCRIPTION", n),
+					xpath.evaluate("TRADE_MARK", n),
+					xpath.evaluate("MANUFACTURER", n),
+					cat);
+		return p;
+	}
+	
 	private static QRequest getSelectRequest(Category cat) {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery("SELECT id, name, description, trade_mark,"
-				+ "manufacturer FROM products WHERE category_id =" + cat.getId() + ";");
+				+ "manufacturer,(SELECT COUNT(*) FROM wh_items WHERE wh_items.product_id = products.id) as availability FROM products WHERE category_id =" + cat.getId() + ";");
 		return req;
 	}
 	
@@ -223,9 +226,7 @@ public class Product {
 		NodeList nodes = (NodeList)xpath.evaluate("result/line", doc, XPathConstants.NODESET);
 		for(int i = 0; i< nodes.getLength(); i++) {
 			Node n = nodes.item(i);
-			//must be unique and not null
 			int id = Integer.valueOf(xpath.evaluate("ID", n));
-			//can be null, so..
 			
 			Product p = new Product(id,
 					xpath.evaluate("NAME", n),
@@ -239,5 +240,11 @@ public class Product {
 	}
 
 	
-	
+	private int id;
+	private String name;
+	private String description;
+	private String manufacturer;
+	private Category category;
+	private String tradeMark;
+	private boolean available;
 }

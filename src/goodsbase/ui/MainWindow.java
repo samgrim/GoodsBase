@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import javax.swing.JTable;
+import javax.swing.JScrollPane;
 
 public class MainWindow {
 
@@ -79,13 +80,19 @@ public class MainWindow {
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
 		productTable = new JTable();
-		splitPane.setRightComponent(productTable);
+		productTable.setAutoCreateRowSorter(true);
 		
 		catTree = new CategoryTree(frmGoodsBase);
-		splitPane.setLeftComponent(catTree);
+		
 		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree, productTable));
 		catTree.getPopupMenu()
 			.addMenuListenerToAllItems(new CategoryTreeNodeMenuListener(catTree));
+		
+		JScrollPane catScrollPane = new JScrollPane(catTree);
+		splitPane.setLeftComponent(catScrollPane);
+		
+		JScrollPane prodScrollPane = new JScrollPane(productTable);
+		splitPane.setRightComponent(prodScrollPane);
 		
 	
 		
