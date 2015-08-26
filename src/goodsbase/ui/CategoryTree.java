@@ -28,11 +28,8 @@ class CategoryTree extends JTree {
 	public CategoryTree(JFrame mainWindow) {
 		this.mainWindow = mainWindow;
 		/*disable double-click expand*/
-		this.setToggleClickCount(0);
-		
-		this.setToolTipText("");
-		this.popupMenu = new TreePopupMenu();		
-	
+		this.setToggleClickCount(0);		
+		this.setToolTipText("");	
 		this.refreshModel();
 	}
 
@@ -59,11 +56,6 @@ class CategoryTree extends JTree {
 		this.setModel(model);
 	}
 	
-	/**@return pop up menu of the tree*/
-	public TreePopupMenu getPopupMenu() {
-		return popupMenu;
-	}
-	
 	/**
 	 * @return the mainWindow
 	 */
@@ -71,61 +63,6 @@ class CategoryTree extends JTree {
 		return mainWindow;
 	}
 
-
-	/**Pop up menu for CategoryTree*/	
-	class TreePopupMenu extends JPopupMenu{		
-		
-		private TreePopupMenu(){
-			addCategoryMenuItem =  new JMenuItem("Add Category");
-			editCategoryMenuItem = new JMenuItem("Edit Category");
-			removeCategoryMenuItem = new JMenuItem("Remove Category");
-			addProductMenuItem = new JMenuItem("Add Product");
-			addCategoryMenuItem.setActionCommand("addCategory");
-			editCategoryMenuItem.setActionCommand("editCategory");
-			removeCategoryMenuItem.setActionCommand("removeCategory");
-			addProductMenuItem.setActionCommand("addProduct");
-			this.add(addCategoryMenuItem);
-			this.add(editCategoryMenuItem);
-			this.add(removeCategoryMenuItem);
-			this.add(addProductMenuItem);
-		}
-	
-		public JMenuItem getAddCategoryMenuItem() {
-			return addCategoryMenuItem;
-		}
-		
-		public JMenuItem getEditCategoryMenuItem() {
-			return editCategoryMenuItem;
-		}
-		
-		public JMenuItem getRemoveCategoryMenuItem() {
-			return removeCategoryMenuItem;
-		}		
-		
-		public JMenuItem getAddProductMenuItem() {
-			return addProductMenuItem;
-		}
-
-		public void addMenuListenerToAllItems(ActionListener listener) {
-			addCategoryMenuItem.addActionListener(listener);
-			editCategoryMenuItem.addActionListener(listener);
-			removeCategoryMenuItem.addActionListener(listener);
-			addProductMenuItem.addActionListener(listener);
-			
-		}
-
-		private final JMenuItem addCategoryMenuItem;
-		private final JMenuItem editCategoryMenuItem;
-		private final JMenuItem removeCategoryMenuItem;
-		private final JMenuItem addProductMenuItem;
-		
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2951480151945473351L;
-	}
-	
-	
 	/*creates a new model for the tree*/
 	private static DefaultTreeModel buildModel() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -162,18 +99,13 @@ class CategoryTree extends JTree {
 		}
 		
 	}
-
-	private final TreePopupMenu popupMenu;
-	private DefaultTreeModel model;
 	
-	private JFrame mainWindow;
-	
-	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());
-	
+	private DefaultTreeModel model;	
+	private JFrame mainWindow;	
+	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());		
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8792924240955329629L;
-
 }

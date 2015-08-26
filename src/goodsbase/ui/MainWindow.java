@@ -82,12 +82,9 @@ public class MainWindow {
 		productTable = new JTable();
 		productTable.setAutoCreateRowSorter(true);
 		
-		catTree = new CategoryTree(frmGoodsBase);
-		
+		catTree = new CategoryTree(frmGoodsBase);		
 		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree, productTable));
-		catTree.getPopupMenu()
-			.addMenuListenerToAllItems(new CategoryTreeNodeMenuListener(catTree));
-		
+	
 		JScrollPane catScrollPane = new JScrollPane(catTree);
 		splitPane.setLeftComponent(catScrollPane);
 		
