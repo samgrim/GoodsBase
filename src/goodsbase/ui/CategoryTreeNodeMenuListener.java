@@ -28,13 +28,13 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 			Category c =  ((node.getUserObject() instanceof Category)? 
 					(Category)node.getUserObject() 
 					: null);
-			if(menuItem == tree.getPopupMenu().getAddCategoryMenuItem()) {
+			if("addCategory".equals(e.getActionCommand())) {
 				addCategoryAction(c);
-			} else if (menuItem == tree.getPopupMenu().getEditCategoryMenuItem()){
-				editAction(c, node);
-			} else if (menuItem == tree.getPopupMenu().getRemoveCategoryMenuItem()) {
+			} else if ("editCategory".equals(e.getActionCommand())){
+				editCategoryAction(c, node);
+			} else if ("removeCategory".equals(e.getActionCommand())) {
 				removeAction(c, node);
-			} else if(menuItem == tree.getPopupMenu().getAddProductMenuItem()) {
+			} else if("addProduct".equals(e.getActionCommand())) {
 				addProductAction(c);
 			}
 		}
@@ -76,15 +76,15 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 				} else {
 					message = "Cannot add category " + c;
 				}
-				JOptionPane.showMessageDialog(tree.getParent(), message, "Category insert", JOptionPane.INFORMATION_MESSAGE);		
+				JOptionPane.showMessageDialog(tree.getMainWindow(), message, "Category insert", JOptionPane.INFORMATION_MESSAGE);		
 			} catch (DataLoadException e) {
-				JOptionPane.showMessageDialog(tree.getParent(), "Insertion produced an error. "
+				JOptionPane.showMessageDialog(tree.getMainWindow(), "Insertion produced an error. "
 						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
 				log.log(Level.WARNING, "Exception caught when inserting category", e);
 			}
 		}
 		
-		private void editAction(Category c, DefaultMutableTreeNode node){
+		private void editCategoryAction(Category c, DefaultMutableTreeNode node){
 			try { 
 				EditCategoryDialog dialog = new EditCategoryDialog(tree.getMainWindow(), c, EditCategoryDialog.EDIT_MODE);				
 				dialog.setVisible(true);
@@ -97,17 +97,17 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 				} else {
 					message = "Cannot update category " + c;
 				}
-				JOptionPane.showMessageDialog(tree.getParent(), message, "Category update", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(tree.getMainWindow(), message, "Category update", JOptionPane.INFORMATION_MESSAGE);
 				tree.refreshModel();
 			} catch (DataLoadException e) {
-				JOptionPane.showMessageDialog(tree.getParent(), "Update produced an error. "
+				JOptionPane.showMessageDialog(tree.getMainWindow(), "Update produced an error. "
 						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
 				log.log(Level.WARNING, "Exception caught when updating category", e);
 			}		
 		}
 		
 		private void removeAction(Category c, DefaultMutableTreeNode node) {
-			int confirm = JOptionPane.showConfirmDialog(tree.getParent(), 
+			int confirm = JOptionPane.showConfirmDialog(tree.getMainWindow(), 
 					"Are you confident in deletion of category " + c + "?", "Delete category", JOptionPane.YES_NO_OPTION);
 			if(confirm == JOptionPane.YES_OPTION) {
 			String message;
@@ -118,9 +118,9 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 				} else {
 					message = "Cannot delete category " + c;
 				}
-				JOptionPane.showMessageDialog(tree.getParent(), message, "Category delete", JOptionPane.INFORMATION_MESSAGE);		
+				JOptionPane.showMessageDialog(tree.getMainWindow(), message, "Category delete", JOptionPane.INFORMATION_MESSAGE);		
 			} catch (DataLoadException e) {
-				JOptionPane.showMessageDialog(tree.getParent(), "Deletion produced an error. "
+				JOptionPane.showMessageDialog(tree.getMainWindow(), "Deletion produced an error. "
 						+ "See log file for details", "Error",  JOptionPane.ERROR_MESSAGE);
 				log.log(Level.WARNING, "Exception caught when deleting category", e);
 			}

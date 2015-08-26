@@ -32,17 +32,9 @@ class CategoryTree extends JTree {
 		
 		this.setToolTipText("");
 		this.popupMenu = new TreePopupMenu();		
-		//this.addMouseListener(new CategoryTreeMouseAdapter(this));
+	
 		this.refreshModel();
-		//ActionListener listener = new CategoryTreeNodeMenuListener(this);
-	//	this.popupMenu.addMenuListenerToAllItems(listener);
 	}
-	
-/*	@Override
-	public DefaultTreeModel getModel() {
-		return (DefaultTreeModel)this.getModel();
-	}*/
-	
 
 	public DefaultTreeModel getCurrentModel() {
 		return model;
@@ -65,12 +57,6 @@ class CategoryTree extends JTree {
 	public void refreshModel() {
 		model = buildModel();
 		this.setModel(model);
-		this.setExpandedState(this.getPathForRow(0), true);
-	/*	if(model.getChildCount(model.getRoot()) > 0) 
-			this.setRootVisible(false);	
-		else {
-			this.setRootVisible(true);
-		}*/
 	}
 	
 	/**@return pop up menu of the tree*/
@@ -94,6 +80,10 @@ class CategoryTree extends JTree {
 			editCategoryMenuItem = new JMenuItem("Edit Category");
 			removeCategoryMenuItem = new JMenuItem("Remove Category");
 			addProductMenuItem = new JMenuItem("Add Product");
+			addCategoryMenuItem.setActionCommand("addCategory");
+			editCategoryMenuItem.setActionCommand("editCategory");
+			removeCategoryMenuItem.setActionCommand("removeCategory");
+			addProductMenuItem.setActionCommand("addProduct");
 			this.add(addCategoryMenuItem);
 			this.add(editCategoryMenuItem);
 			this.add(removeCategoryMenuItem);
@@ -121,6 +111,7 @@ class CategoryTree extends JTree {
 			editCategoryMenuItem.addActionListener(listener);
 			removeCategoryMenuItem.addActionListener(listener);
 			addProductMenuItem.addActionListener(listener);
+			
 		}
 
 		private final JMenuItem addCategoryMenuItem;
