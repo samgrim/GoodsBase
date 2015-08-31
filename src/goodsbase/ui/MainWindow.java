@@ -11,9 +11,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 public class MainWindow {
@@ -73,8 +75,26 @@ public class MainWindow {
 		splitPane.setResizeWeight(0.15);
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
+		/*product table*/
 		productTable = new JTable();
 		productTable.setAutoCreateRowSorter(true);
+		productTable.addMouseListener( new ProductTableMouseAdapter(this));
+		productTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		/*product table popup menu*/
+		JPopupMenu tablePopupMenu = new JPopupMenu();		
+		JMenuItem item = new JMenuItem("Add Product");
+		item.setActionCommand("addProduct");
+		tablePopupMenu.add(item);
+		item = new JMenuItem("Edit Product");
+		item.setActionCommand("editProduct");
+		tablePopupMenu.add(item);
+		item = new JMenuItem("Remove Product");
+		item.setActionCommand("removeProduct");
+		tablePopupMenu.add(item);
+		item = new JMenuItem("View at warehouse (double click)");
+		item.setActionCommand("viewProductAtWh");
+		tablePopupMenu.add(item);
+		productTable.setComponentPopupMenu(tablePopupMenu);
 		
 		catTree = new CategoryTree();		
 		catTree.addMouseListener(new CategoryTreeMouseAdapter(this));
