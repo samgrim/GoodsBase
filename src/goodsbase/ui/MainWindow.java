@@ -1,9 +1,12 @@
 package goodsbase.ui;
 
+import goodsbase.model.Product;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -76,7 +79,18 @@ public class MainWindow {
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
 		/*product table*/
-		productTable = new JTable();
+		productTable = new JTable(){
+			@Override
+			public String getToolTipText(MouseEvent event) {
+				java.awt.Point p = event.getPoint();
+                int rowIndex = rowAtPoint(p);
+                if(rowIndex!=-1) {
+                	return ((Product)getValueAt(rowIndex, 0))
+                				.getDescription();
+                }
+                return "";
+			}
+		};
 		productTable.setAutoCreateRowSorter(true);
 		productTable.addMouseListener( new ProductTableMouseAdapter(this));
 		productTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
