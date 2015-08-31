@@ -22,6 +22,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		this.window = window;
 	
 		ActionListener listener = new CategoryTreeNodeMenuListener(window);
+		/*menu init*/
 		treeMenu = new JPopupMenu();
 		JMenuItem item = new JMenuItem("Add Category");
 		item.setActionCommand("addCategory");
@@ -41,7 +42,48 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		treeMenu.add(item);
 	}
 	
-	private void myPopupEvent(MouseEvent e) {
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger()) popupEvent(e);
+	}
+		
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			popupEvent(e);
+		} else if (e.getClickCount() ==2) {
+			doubleClickEvent();
+		}
+	}
+	
+	
+	private void doubleClickEvent(){
+		DefaultMutableTreeNode node = 
+				(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
+		if(node.getUserObject() instanceof Category) {
+			DefaultTableModel tableModel;
+			try {
+				String[] colomns = {"Name", "Trade Mark", "Manufacturer", "Positions available in warehouse"};
+				tableModel = new DefaultTableModel(Loaders.getProductsAsArray((Category)node.getUserObject()), colomns){
+					
+					@Override
+					    public boolean isCellEditable(int row, int column) {
+					       //all cells false
+					       return false;
+					    }
+			
+					private static final long serialVersionUID = 2901615843314533198L;
+				};	
+				
+			} catch (XPathExpressionException | DataLoadException e1) {
+				tableModel = new DefaultTableModel();
+				JOptionPane.showMessageDialog(window.getCatTree().getParent(), "Failed to load products");
+			}
+			window.getProductTable().setModel(tableModel);
+		}
+	}
+	
+	private void popupEvent(MouseEvent e) {
 		int x = e.getX();
 			int y = e.getY();
 			
@@ -71,41 +113,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 			treeMenu.show(window.getCatTree(), x, y);
 	}
 		
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (e.isPopupTrigger()) myPopupEvent(e);
-		/*double-click action*/
-		else if (e.getClickCount() ==2) {
-			DefaultMutableTreeNode node = 
-				(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
-			if(node.getUserObject() instanceof Category) {
-				DefaultTableModel tableModel;
-				try {
-					String[] colomns = {"Name", "Trade Mark", "Manufacturer", "Positions available in warehouse"};
-					tableModel = new DefaultTableModel(Loaders.getProductsAsArray((Category)node.getUserObject()), colomns){
-						
-						@Override
-						    public boolean isCellEditable(int row, int column) {
-						       //all cells false
-						       return false;
-						    }
-				
-						private static final long serialVersionUID = 2901615843314533198L;
-					};	
-					
-				} catch (XPathExpressionException | DataLoadException e1) {
-					tableModel = new DefaultTableModel();
-					JOptionPane.showMessageDialog(window.getCatTree().getParent(), "Failed to load products");
-				}
-				window.getProductTable().setModel(tableModel);
-			}
-		}
-	}
-		
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger()) myPopupEvent(e);
-	}
+
 
 	private final MainWindow window;
 	private final JPopupMenu treeMenu;
