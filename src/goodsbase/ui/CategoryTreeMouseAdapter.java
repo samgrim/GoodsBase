@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -19,10 +18,10 @@ import javax.xml.xpath.XPathExpressionException;
 
 class CategoryTreeMouseAdapter extends MouseAdapter{
 
-	public CategoryTreeMouseAdapter(CategoryTree tree, JTable table) {
-		this.tree = tree;
-		this.table = table;
-		ActionListener listener = new CategoryTreeNodeMenuListener(tree);
+	public CategoryTreeMouseAdapter(MainWindow window) {
+		this.window = window;
+	
+		ActionListener listener = new CategoryTreeNodeMenuListener(window);
 		treeMenu = new JPopupMenu();
 		JMenuItem item = new JMenuItem("Add Category");
 		item.setActionCommand("addCategory");
@@ -46,12 +45,12 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		int x = e.getX();
 			int y = e.getY();
 			
-			TreePath path = tree.getPathForLocation(x, y);
+			TreePath path = window.getCatTree().getPathForLocation(x, y);
 			if (path == null)
 				return;	
-			tree.setSelectionPath(path);
+			window.getCatTree().setSelectionPath(path);
 			DefaultMutableTreeNode node = 
-					(DefaultMutableTreeNode)tree.getLastSelectedPathComponent();	
+					(DefaultMutableTreeNode)window.getCatTree().getLastSelectedPathComponent();	
 			/*do not show menu if loading errors*/
 			if(node.getUserObject()==CategoryTree.ERROR_STRING) {
 				return;
@@ -69,7 +68,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 			} else {
 				treeMenu.getComponent(2).setEnabled(false);
 			}
-			treeMenu.show(tree, x, y);
+			treeMenu.show(window.getCatTree(), x, y);
 	}
 		
 	@Override
@@ -78,7 +77,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		/*double-click action*/
 		else if (e.getClickCount() ==2) {
 			DefaultMutableTreeNode node = 
-				(DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent();
+				(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
 			if(node.getUserObject() instanceof Category) {
 				DefaultTableModel tableModel;
 				try {
@@ -96,9 +95,9 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 					
 				} catch (XPathExpressionException | DataLoadException e1) {
 					tableModel = new DefaultTableModel();
-					JOptionPane.showMessageDialog(tree.getParent(), "Failed to load products");
+					JOptionPane.showMessageDialog(window.getCatTree().getParent(), "Failed to load products");
 				}
-				table.setModel(tableModel);
+				window.getProductTable().setModel(tableModel);
 			}
 		}
 	}
@@ -107,8 +106,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 	public void mouseReleased(MouseEvent e) {
 		if (e.isPopupTrigger()) myPopupEvent(e);
 	}
-	
-	private CategoryTree tree;
-	private JTable table;
+
+	private final MainWindow window;
 	private final JPopupMenu treeMenu;
 }

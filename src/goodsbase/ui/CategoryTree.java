@@ -3,16 +3,12 @@ package goodsbase.ui;
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
 
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -25,8 +21,7 @@ class CategoryTree extends JTree {
 	
 	public static final String ERROR_STRING = "Failed to load categories";
 	
-	public CategoryTree(JFrame mainWindow) {
-		this.mainWindow = mainWindow;
+	public CategoryTree() {
 		/*disable double-click expand*/
 		this.setToggleClickCount(0);		
 		this.setToolTipText("");	
@@ -37,7 +32,7 @@ class CategoryTree extends JTree {
 		return model;
 	}
 
-	/*pop-up messages*/
+	/*tooltips*/
 	@Override
 	public String getToolTipText(MouseEvent e) {	 
 		TreePath p = getPathForLocation(e.getX(), e.getY());
@@ -54,13 +49,6 @@ class CategoryTree extends JTree {
 	public void refreshModel() {
 		model = buildModel();
 		this.setModel(model);
-	}
-	
-	/**
-	 * @return the mainWindow
-	 */
-	public JFrame getMainWindow() {
-		return mainWindow;
 	}
 
 	/*creates a new model for the tree*/
@@ -101,9 +89,7 @@ class CategoryTree extends JTree {
 	}
 	
 	private DefaultTreeModel model;	
-	private JFrame mainWindow;	
-	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());		
-	
+	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());			
 	/**
 	 * 
 	 */

@@ -1,7 +1,6 @@
 package goodsbase.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
@@ -12,15 +11,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.SwingConstants;
-
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 public class MainWindow {
 
@@ -82,8 +76,8 @@ public class MainWindow {
 		productTable = new JTable();
 		productTable.setAutoCreateRowSorter(true);
 		
-		catTree = new CategoryTree(frmGoodsBase);		
-		catTree.addMouseListener(new CategoryTreeMouseAdapter(catTree, productTable));
+		catTree = new CategoryTree();		
+		catTree.addMouseListener(new CategoryTreeMouseAdapter(this));
 	
 		JScrollPane catScrollPane = new JScrollPane(catTree);
 		splitPane.setLeftComponent(catScrollPane);
@@ -91,19 +85,23 @@ public class MainWindow {
 		JScrollPane prodScrollPane = new JScrollPane(productTable);
 		splitPane.setRightComponent(prodScrollPane);
 		
-	
-		
-//		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-//		splitPane.setRightComponent(tabbedPane);
-		
 		JPanel statusBar = new JPanel();
 		frmGoodsBase.getContentPane().add(statusBar, BorderLayout.SOUTH);
-		
-//		JToolBar toolBar = new JToolBar();
-//		frmGoodsBase.getContentPane().add(toolBar, BorderLayout.NORTH);
-//		frmGoodsBase.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{frmGoodsBase.getContentPane()}));
 	}
 	
+
+	public JFrame getFrmGoodsBase() {
+		return frmGoodsBase;
+	}
+
+	public JTable getProductTable() {
+		return productTable;
+	}
+
+	public CategoryTree getCatTree() {
+		return catTree;
+	}
+
 
 	private JFrame frmGoodsBase;
 	private JTable productTable;
