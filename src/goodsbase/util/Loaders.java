@@ -66,12 +66,12 @@ public class Loaders {
 		return result;
 	}
 	
-	public static Object[][] getProductsArray() throws DataLoadException, XPathExpressionException{
+	public static Object[][] getProductsAsArray() throws DataLoadException, XPathExpressionException{
 		String query = "SELECT products.prod_id, products.prod_name, products.prod_description, products.prod_trade_mark,"
 				+ "products.prod_manufacturer, categories.cat_id, categories.cat_name,"
 				+ " categories.cat_description, categories.cat_parent_id, (SELECT COUNT(*) FROM wh_items WHERE wh_items.wh_product_id = products.prod_id)"
 				+ " as availability FROM products INNER JOIN categories ON"
-				+ "products.prod_category_id = categories.cat_id;";
+				+ " products.prod_category_id = categories.cat_id;";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);		
 		Document doc = DataLoader.load(req);		
@@ -89,6 +89,10 @@ public class Loaders {
 			result[i][2] = p.getManufacturer();
 			result[i][3] = p.getTradeMark();
 			result[i][4] = xpath.evaluate("availability", nodes.item(i));
+			if(Integer.valueOf((String) result[i][4]) > 0)
+				result[i][4] = "YES";
+			else 
+				result[i][4] = "NO";
 		}
 		return result;
 	}

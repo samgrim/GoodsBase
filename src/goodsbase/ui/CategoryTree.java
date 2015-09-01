@@ -20,6 +20,7 @@ import javax.swing.tree.TreePath;
 class CategoryTree extends JTree {
 	
 	public static final String ERROR_STRING = "Failed to load categories";
+	public static final String ROOT_STRING = "Categories";
 	
 	public CategoryTree() {
 		/*disable double-click expand*/
@@ -58,7 +59,7 @@ class CategoryTree extends JTree {
 			Set<Category> categories = Category.load();
 			if(categories.size()>0) {
 				buildTree(categories, root);
-				root.setUserObject("Categories");
+				root.setUserObject(ROOT_STRING);
 			} else {
 				root.setUserObject("Right-click to create the first category");
 			}
@@ -87,9 +88,9 @@ class CategoryTree extends JTree {
 		}
 		
 	}
-	
 	private DefaultTreeModel model;	
-	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());			
+	private static final Logger log = Logger.getLogger(CategoryTree.class.getName());
+	
 	/**
 	 * 
 	 */
