@@ -145,6 +145,22 @@ public class Category {
 		return false;
 	}
 	
+	public static Category parseCategory(Node n, XPath xpath) throws XPathExpressionException{
+		//must be unique and not null
+		int id = Integer.valueOf(xpath.evaluate("CAT_ID", n));
+		//can be null, so..
+		int parentId;
+		try{
+			parentId = Integer.valueOf(xpath.evaluate("CAT_PARENT_ID", n));			
+		} catch (NumberFormatException e) {
+			parentId = 0;
+		}
+		return new Category(id,
+				parentId,
+				xpath.evaluate("CAT_NAME", n),
+				xpath.evaluate("CAT_DESCRIPTION", n));
+	}
+	
 	private static QRequest getSelectRequest() {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery("SELECT * FROM categories;");
@@ -153,22 +169,22 @@ public class Category {
 	
 	private static QRequest getUpdateRequest(Category cat){
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("UPDATE categories SET name = '"+ cat.name 
-				+ "', description = '"+ cat.description
-				+"', parent_id = " + cat.parentId
-				+" WHERE id = "+ cat.id +";");
+		req.addQuery("UPDATE categories SET cat_name = '"+ cat.name 
+				+ "', cat_description = '"+ cat.description
+				+"', cat_parent_id = " + cat.parentId
+				+" WHERE cat_id = "+ cat.id +";");
 		return req;
 	}
 	
 	private static QRequest getDeleteRequest(Category cat) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("DELETE FROM categories WHERE id = " + cat.id + ";");
+		req.addQuery("DELETE FROM categories WHERE cat_id = " + cat.id + ";");
 		return req;
 	}
 	
 	private static QRequest getInsertRequest(Category cat) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("INSERT INTO categories (NAME, DESCRIPTION, PARENT_ID) VALUES('"
+		req.addQuery("INSERT INTO categories (CAT_NAME, CAT_DESCRIPTION, CAT_PARENT_ID) VALUES('"
 				+ cat.getName() +
 				"', '" +cat.getDescription()+
 				"', '" +cat.getParentId()+
@@ -182,26 +198,12 @@ public class Category {
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList)xpath.evaluate("result/line", doc, XPathConstants.NODESET);
 		for(int i = 0; i< nodes.getLength(); i++) {
-			Node n = nodes.item(i);
-			//must be unique and not null
-			int id = Integer.valueOf(xpath.evaluate("ID", n));
-			//can be null, so..
-			int parentId;
-			try{
-				parentId = Integer.valueOf(xpath.evaluate("PARENT_ID", n));			
-			} catch (NumberFormatException e) {
-				parentId = 0;
-			}
-			Category c = new Category(id,
-					parentId,
-					xpath.evaluate("NAME", n),
-					xpath.evaluate("DESCRIPTION", n));
+			Node n = nodes.item(i);			
+			Category c = parseCategory(n, xpath);
 			cat.add(c);
 		}
 		return cat;
 	}
-	
-	
 	
 	@Override
 	public boolean equals(Object obj) {

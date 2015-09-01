@@ -135,14 +135,14 @@ public class Product {
 	 * from server database
 	 * @throws DataLoadException 
 	 **/
-	public static Set<Product> load(Category c) throws DataLoadException {		
+/*	public static Set<Product> load(Category c) throws DataLoadException {		
 		Document doc = DataLoader.load(getSelectRequest(c));
 		try {
 			return parse(doc, c);
 		} catch (XPathExpressionException e) {
 			throw new DataLoadException(e);
 		}
-	}
+	}*/
 	/**Removes product from the server database
 	 * @throws DataLoadException 
 	 **/
@@ -174,26 +174,26 @@ public class Product {
 	}
 	
 	public static Product parse(XPath xpath, Node n, Category cat) throws NumberFormatException, XPathExpressionException{		
-		Product p = new Product(Integer.valueOf(xpath.evaluate("ID", n)),
-					xpath.evaluate("NAME", n),
-					xpath.evaluate("DESCRIPTION", n),
-					xpath.evaluate("TRADE_MARK", n),
-					xpath.evaluate("MANUFACTURER", n),
+		Product p = new Product(Integer.valueOf(xpath.evaluate("PROD_ID", n)),
+					xpath.evaluate("PROD_NAME", n),
+					xpath.evaluate("PROD_DESCRIPTION", n),
+					xpath.evaluate("PROD_TRADE_MARK", n),
+					xpath.evaluate("PROD_MANUFACTURER", n),
 					cat);
 		return p;
 	}
 	
-	private static QRequest getSelectRequest(Category cat) {
+	/*private static QRequest getSelectRequest(Category cat) {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery("SELECT id, name, description, trade_mark,"
-				+ "manufacturer,(SELECT COUNT(*) FROM wh_items WHERE wh_items.product_id = products.id) as availability FROM products WHERE category_id =" + cat.getId() + ";");
+		req.addQuery("SELECT prod_id, prod_name, prod_description, prod_trade_mark,"
+				+ "prod_manufacturer,(SELECT COUNT(*) FROM wh_items WHERE wh_items.product_id = products.id) as availability FROM products WHERE category_id =" + cat.getId() + ";");
 		return req;
-	}
+	}*/
 	
 	private static QRequest getInsertRequest(Product prod) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("INSERT INTO products (name, description, trade_mark,"
-				+ "manufacturer, category_id) VALUES ( '" + prod.getName() + "','"
+		req.addQuery("INSERT INTO products (prod_name, prod_description, prod_trade_mark,"
+				+ "prod_manufacturer, prod_category_id) VALUES ( '" + prod.getName() + "','"
 						+ prod.getDescription() +"','"
 						+ prod.getTradeMark() +"','"
 						+ prod.getManufacturer() +"','"
@@ -203,12 +203,12 @@ public class Product {
 	
 	private static QRequest getUpdateRequest(Product prod) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("UPDATE products SET name ='" + prod.getName() 
-				+ "', description ='" + prod.getDescription()
-				+"', trade_mark = '" + prod.getTradeMark()
-				+"', manufacturer = '" + prod.getManufacturer()
-				+"', category_id = '" + prod.getCategory().getId()
-				+"' WHERE id = "+prod.getId()+";");
+		req.addQuery("UPDATE products SET prod_name ='" + prod.getName() 
+				+ "', prod_description ='" + prod.getDescription()
+				+"', prod_trade_mark = '" + prod.getTradeMark()
+				+"', prod_manufacturer = '" + prod.getManufacturer()
+				+"', prod_category_id = '" + prod.getCategory().getId()
+				+"' WHERE prod_id = "+prod.getId()+";");
 		return req;
 	}
 	
@@ -226,13 +226,13 @@ public class Product {
 		NodeList nodes = (NodeList)xpath.evaluate("result/line", doc, XPathConstants.NODESET);
 		for(int i = 0; i< nodes.getLength(); i++) {
 			Node n = nodes.item(i);
-			int id = Integer.valueOf(xpath.evaluate("ID", n));
+			int id = Integer.valueOf(xpath.evaluate("PROD_ID", n));
 			
 			Product p = new Product(id,
-					xpath.evaluate("NAME", n),
-					xpath.evaluate("DESCRIPTION", n),
-					xpath.evaluate("TRADE_MARK", n),
-					xpath.evaluate("MANUFACTURER", n),
+					xpath.evaluate("PROD_NAME", n),
+					xpath.evaluate("PROD_DESCRIPTION", n),
+					xpath.evaluate("PROD_TRADE_MARK", n),
+					xpath.evaluate("PROD_MANUFACTURER", n),
 					cat);
 			prod.add(p);
 		}
@@ -246,5 +246,4 @@ public class Product {
 	private String manufacturer;
 	private Category category;
 	private String tradeMark;
-	private boolean available;
 }

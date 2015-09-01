@@ -70,32 +70,32 @@ public class DbConnection {
 			stat = conn.createStatement();
 			log.info("Creating tables...");
 			stat.executeUpdate("CREATE table IF NOT EXISTS CATEGORIES ("
-					+ "ID INTEGER PRIMARY KEY,"
-					+ "NAME TEXT UNIQUE,"
-					+ "DESCRIPTION TEXT,"
-					+ "PARENT_ID INTEGER);");
+					+ "CAT_ID INTEGER PRIMARY KEY,"
+					+ "CAT_NAME TEXT UNIQUE,"
+					+ "CAT_DESCRIPTION TEXT,"
+					+ "CAT_PARENT_ID INTEGER);");
 			stat.executeUpdate("CREATE table IF NOT EXISTS PRODUCTS ("
-					+ "ID INTEGER PRIMARY KEY,"
-					+ "NAME TEXT,"
-					+ "DESCRIPTION TEXT,"
-					+ "MANUFACTURER TEXT,"
-					+ "TRADE_MARK TEXT,"
-					+ "CATEGORY_ID INTEGER NOT NULL,"
-					+ "CONSTRAINT unq UNIQUE (NAME, MANUFACTURER, TRADE_MARK));");
+					+ "PROD_ID INTEGER PRIMARY KEY,"
+					+ "PROD_NAME TEXT,"
+					+ "PROD_DESCRIPTION TEXT,"
+					+ "PROD_MANUFACTURER TEXT,"
+					+ "PROD_TRADE_MARK TEXT,"
+					+ "PROD_CATEGORY_ID INTEGER NOT NULL,"
+					+ "CONSTRAINT unq UNIQUE (PROD_NAME, PROD_MANUFACTURER, PROD_TRADE_MARK));");
 			stat.executeUpdate("CREATE table IF NOT EXISTS WH_ITEMS ("
-					+ "ID INTEGER PRIMARY KEY,"
-					+ "PRODUCT_ID INTEGER,"
-					+ "QUANTITY BLOB,"
-					+ "UNITS TEXT,"
-					+ "PRICE BLOB);");
+					+ "WH_ID INTEGER PRIMARY KEY,"
+					+ "WH_PRODUCT_ID INTEGER,"
+					+ "WH_QUANTITY BLOB,"
+					+ "WH_UNITS TEXT,"
+					+ "WH_PRICE BLOB);");
 			stat.executeUpdate("CREATE table IF NOT EXISTS SUPPLIES ("
-					+ "ID INTEGER PRIMARY KEY,"
-					+ "DATE INTEGER,"
-					+ "TYPE TEXT,"
-					+ "PRODUCT_ID INTEGER,"
-					+ "QUANTITY BLOB,"
-					+ "UNITS TEXT,"
-					+ "PRICE BLOB);");
+					+ "SUPPLIES_ID INTEGER PRIMARY KEY,"
+					+ "SUPPLIES_DATE INTEGER,"
+					+ "SUPPLIES_TYPE TEXT,"
+					+ "SUPPLIES_PRODUCT_ID INTEGER,"
+					+ "SUPPLIES_QUANTITY BLOB,"
+					+ "SUPPLIES_UNITS TEXT,"
+					+ "SUPPLIES_PRICE BLOB);");
 			conn.commit();
 			log.info("Tables created");
 		} catch (SQLException e) {
