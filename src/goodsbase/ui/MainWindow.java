@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
@@ -95,18 +96,23 @@ public class MainWindow {
 		productTable.addMouseListener( new ProductTableMouseAdapter(this));
 		productTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		/*product table popup menu*/
+		ActionListener actListener = new ProductTableMenuListener(this);
 		JPopupMenu tablePopupMenu = new JPopupMenu();		
 		JMenuItem item = new JMenuItem("Add Product");
 		item.setActionCommand("addProduct");
+		item.addActionListener(actListener);
 		tablePopupMenu.add(item);
 		item = new JMenuItem("Edit Product");
 		item.setActionCommand("editProduct");
+		item.addActionListener(actListener);
 		tablePopupMenu.add(item);
 		item = new JMenuItem("Remove Product");
 		item.setActionCommand("removeProduct");
+		item.addActionListener(actListener);
 		tablePopupMenu.add(item);
 		item = new JMenuItem("View at warehouse (double click)");
 		item.setActionCommand("viewProductAtWh");
+		item.addActionListener(actListener);
 		tablePopupMenu.add(item);
 		productTable.setComponentPopupMenu(tablePopupMenu);
 		
