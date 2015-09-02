@@ -26,19 +26,6 @@ import org.w3c.dom.NodeList;
 public class Loaders {
 
 	/**
-	 * Loads categories and sorts them by name
-	 * 
-	 * @throws DataLoadException
-	 * *//*
-	public static Category[] getSortedByNameCategories()
-			throws DataLoadException {
-		Set<Category> cats = Category.loadAsSet();
-		Category[] catsArr = cats.toArray(new Category[0]);
-		Arrays.sort(catsArr, Category.BY_NAME);
-		return catsArr;
-	}*/
-
-	/**
 	 * @return array of categories sorted by name
 	 * @throws DataLoadException
 	 * @throws XPathExpressionException
