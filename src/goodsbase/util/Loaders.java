@@ -103,8 +103,8 @@ public class Loaders {
 		for (int i = 0; i < result.length; i++) {
 			c = Category.parseCategory(nodes.item(i), xpath);
 			p = Product.parse(xpath, nodes.item(i), c);
-			result[i][0] = p;
-			result[i][1] = p.getCategory();
+			result[i][0] = p.getCategory();
+			result[i][1] = p;
 			result[i][2] = p.getManufacturer();
 			result[i][3] = p.getTradeMark();
 			result[i][4] = xpath.evaluate("availability", nodes.item(i));
