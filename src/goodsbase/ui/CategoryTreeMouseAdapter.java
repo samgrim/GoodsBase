@@ -59,7 +59,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 	
 	private void doubleClickEvent(){
 		DefaultMutableTreeNode node = 
-				(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
+					(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
 		DefaultTableModel tableModel = new DefaultTableModel(){				
 			@Override
 			    public boolean isCellEditable(int row, int column) {

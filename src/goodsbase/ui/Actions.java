@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.xpath.XPathExpressionException;
 
 /**Contains methods to perform various menu actions
  * @author Daria
@@ -18,9 +19,10 @@ class Actions {
 	/**Adds a product to database
 	 * @param window - parent window for dialogs
 	 * @param selected  - the category will be initially selected at dialog window
-	 * @throws DataLoadException if database problems occur*/
+	 * @throws DataLoadException if database problems occur
+	 * @throws XPathExpressionException */
 	public static void addProductAction(MainWindow window, Category selected)
-			throws DataLoadException {
+			throws DataLoadException, XPathExpressionException {
 		EditProductDialog dialog = EditProductDialog.getAddDialog(
 				window.getFrmGoodsBase(), selected);
 		dialog.setVisible(true);
@@ -41,9 +43,10 @@ class Actions {
 	/**Edits product and writes it to database
 	 * @param window - parent window for dialogs
 	 * @throws DataLoadException if database problems occur
+	 * @throws XPathExpressionException 
 	 */
 	public static void editProductAction(MainWindow window)
-			throws DataLoadException {
+			throws DataLoadException, XPathExpressionException {
 		JTable table = window.getProductTable();
 		int row = table.getSelectedRow();
 		if (row < 0)
@@ -79,9 +82,10 @@ class Actions {
 	 * @param selected  - the category will be initially selected 
 	 * as parent category at dialog window
 	 * @throws DataLoadException if database problems occur
+	 * @throws XPathExpressionException 
 	 */
 	public static void addCategoryAction(MainWindow window, Category selected)
-			throws DataLoadException {
+			throws DataLoadException, XPathExpressionException {
 		EditCategoryDialog dialog = new EditCategoryDialog(
 				window.getFrmGoodsBase(), selected,
 				EditCategoryDialog.INSERT_MODE);
@@ -105,9 +109,10 @@ class Actions {
 	 * @param window - parent window for dialogs
 	 * @param selected  - the category to edit
 	 * @throws DataLoadException if database problems occur
+	 * @throws XPathExpressionException 
 	 */
 	public static void editCategoryAction(MainWindow window, 
-							Category selected) throws DataLoadException {
+							Category selected) throws DataLoadException, XPathExpressionException {
 
 		EditCategoryDialog dialog = new EditCategoryDialog(
 				window.getFrmGoodsBase(), selected,

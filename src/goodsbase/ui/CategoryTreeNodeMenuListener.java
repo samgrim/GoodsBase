@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.xpath.XPathExpressionException;
 
 class CategoryTreeNodeMenuListener implements ActionListener {
 				
@@ -33,7 +34,7 @@ class CategoryTreeNodeMenuListener implements ActionListener {
 				} else if("addProduct".equals(e.getActionCommand())) {
 					Actions.addProductAction(window, c);
 				}
-			} catch (DataLoadException e1) {
+			} catch (DataLoadException | XPathExpressionException e1) {
 				JOptionPane.showMessageDialog(window.getFrmGoodsBase(), 
 						ERROR_STRING,"Error message", 
 						JOptionPane.ERROR_MESSAGE);

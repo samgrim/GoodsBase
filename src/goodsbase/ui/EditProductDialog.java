@@ -21,6 +21,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
+import javax.xml.xpath.XPathExpressionException;
 
 import java.awt.Toolkit;
 import java.awt.Font;
@@ -44,8 +45,9 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	
 	/**
 	 * Create the dialog for adding new product
+	 * @throws XPathExpressionException 
 	 */
-	public static EditProductDialog getAddDialog(Frame owner, Category cat) {
+	public static EditProductDialog getAddDialog(Frame owner, Category cat) throws XPathExpressionException {
 		EditProductDialog dialog = null;
 		try {
 			dialog = new EditProductDialog(owner, INSERT_MODE, cat, null);
@@ -56,8 +58,9 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog for editing existing product
 	 * @throws DataLoadException 
+	 * @throws XPathExpressionException 
 	 */
-	public static EditProductDialog getEditDialog(Frame owner, Product prod) throws DataLoadException {
+	public static EditProductDialog getEditDialog(Frame owner, Product prod) throws DataLoadException, XPathExpressionException {
 		return new EditProductDialog(owner, EDIT_MODE, null, prod);
 	}
 	
@@ -94,7 +97,7 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	}
 
 	
-	private EditProductDialog(Frame owner, int mode, Category cat, Product prod) throws DataLoadException {
+	private EditProductDialog(Frame owner, int mode, Category cat, Product prod) throws DataLoadException, XPathExpressionException {
 		super(owner);
 		this.mode = mode;
 		this.category = cat;
@@ -139,7 +142,7 @@ public class EditProductDialog extends JDialog implements ActionListener {
 		default:
 		case EDIT_MODE:
 			setTitle("Edit product");
-			Category[] cats = Loaders.getSortedByNameCategories();
+			Category[] cats = Loaders.getCategoriesByNameAsArray();
 			JComboBox<Category> catBox = new JComboBox<Category>(cats);
 			catBox.setSelectedItem(prod.getCategory());
 			categoryComp = catBox;

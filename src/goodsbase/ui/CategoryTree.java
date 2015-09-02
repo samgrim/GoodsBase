@@ -56,7 +56,7 @@ class CategoryTree extends JTree {
 	private static DefaultTreeModel buildModel() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		try {
-			Set<Category> categories = Category.load();
+			Set<Category> categories = Category.loadAsSet();
 			if(categories.size()>0) {
 				buildTree(categories, root);
 				root.setUserObject(ROOT_STRING);

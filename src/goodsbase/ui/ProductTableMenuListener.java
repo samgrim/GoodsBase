@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * @author Daria
@@ -39,7 +40,7 @@ public class ProductTableMenuListener implements ActionListener{
 				case "viewProductAtWh":
 					break;				
 			}
-		} catch (DataLoadException e1) {
+		} catch (DataLoadException | XPathExpressionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

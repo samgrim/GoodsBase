@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.xml.xpath.XPathExpressionException;
 
 public class EditCategoryDialog extends JDialog implements ActionListener {
 	
@@ -50,8 +51,9 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 * @throws DataLoadException in EDIT_MODE only
+	 * @throws XPathExpressionException 
 	 */
-	public EditCategoryDialog(Frame owner, Category category, int mode) throws DataLoadException {
+	public EditCategoryDialog(Frame owner, Category category, int mode) throws DataLoadException, XPathExpressionException {
 		super(owner);
 		this.mode = mode;
 		this.category = category;
@@ -80,7 +82,7 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 			case EDIT_MODE:
 				//TODO: optimize
 				setTitle("Edit category");
-				Category[] cats = Loaders.getSortedByNameCategories();
+				Category[] cats = Loaders.getCategoriesByNameAsArray();
 				JComboBox<Category> catBox = new JComboBox<Category>(cats);
 				catBox.addItem(null);
 				catBox.setSelectedIndex(
