@@ -29,8 +29,8 @@ public class ProductTable extends JTable {
 	public String getToolTipText(MouseEvent event) {
 		java.awt.Point p = event.getPoint();
         int rowIndex = rowAtPoint(p);
-        if(rowIndex!=-1) {
-        	return ((Product)getValueAt(rowIndex, 0))
+        if(rowIndex!=-1 && productColomnIndex>=0) {
+        	return getProductAtRowIndex(rowIndex)
         				.getDescription();
         }
         return "";
