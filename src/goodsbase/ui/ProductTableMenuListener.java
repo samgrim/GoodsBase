@@ -24,10 +24,10 @@ public class ProductTableMenuListener implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
+			int rowIndex = window.getProductTable().getSelectedRow();
 			switch(e.getActionCommand()) {
 				default: break;
-				case "addProduct":	
-					int rowIndex = window.getProductTable().getSelectedRow();
+				case "addProduct":						
 					Category c;
 					/*if no rows selected in table
 					 * get selected category in tree,
@@ -47,7 +47,11 @@ public class ProductTableMenuListener implements ActionListener{
 				case "removeProduct":
 					break;
 				case "editProduct":
-					Actions.editProductAction(window);
+					if(rowIndex < 0) return;
+					Product p = window.getProductTable().
+							getProductAtRowIndex(rowIndex);
+					if(p == null) return;
+					Actions.editProductAction(window, p);
 					break;
 				case "viewProductAtWh":
 					break;				

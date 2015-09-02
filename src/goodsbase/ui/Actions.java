@@ -52,27 +52,17 @@ class Actions {
 	 * 
 	 * @param window
 	 *            - parent window for dialogs
+	 * @param product
+	 *            - product to be edited 
 	 * @throws DataLoadException
 	 *             if database problems occur
 	 * @throws XPathExpressionException
 	 */
-	public static void editProductAction(MainWindow window)
+	public static void editProductAction(MainWindow window, Product product)
 			throws DataLoadException, XPathExpressionException {
-		JTable table = window.getProductTable();
-		int row = table.getSelectedRow();
-		if (row < 0)
-			return;
-		/* говнокоооод */
-		Product prod;
-		if (table.getColumnCount() == 4) {
-			prod = (Product) table.getValueAt(row, 0);
-		} else if (table.getColumnCount() == 5) {
-			prod = (Product) table.getValueAt(row, 1);
-		} else
-			return;
 
 		EditProductDialog dialog = EditProductDialog.getEditDialog(
-				window.getFrmGoodsBase(), prod);
+				window.getFrmGoodsBase(), product);
 		dialog.setVisible(true);
 		Product res = dialog.getResult();
 		if (res == null)
@@ -82,7 +72,7 @@ class Actions {
 			message = "Product succesfully changed";
 			window.getCatTree().refreshModel();
 		} else {
-			message = "Cannot modify product" + prod;
+			message = "Cannot modify product" + product;
 		}
 		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
 				"Edit Product", JOptionPane.INFORMATION_MESSAGE);
