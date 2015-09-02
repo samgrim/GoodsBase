@@ -48,18 +48,17 @@ class Actions {
 	}
 
 	/**
-	 * Edits product and writes it to database
-	 * 
+	 * Edits product, writes it to database
+	 * and updates row in product table of window parameter
 	 * @param window
 	 *            - parent window for dialogs
 	 * @param product
 	 *            - product to be edited 
-	 * @return resulting product
 	 * @throws DataLoadException
 	 *             if database problems occur
 	 * @throws XPathExpressionException
 	 */
-	public static Product editProductAction(MainWindow window, Product product)
+	public static void editProductAction(MainWindow window, Product product)
 			throws DataLoadException, XPathExpressionException {
 
 		EditProductDialog dialog = EditProductDialog.getEditDialog(
@@ -67,20 +66,47 @@ class Actions {
 		dialog.setVisible(true);
 		Product res = dialog.getResult();
 		if (res == null)
-			return null;
-		String message;
-		Product p;
+			return;
+		String message;	
 		if (Product.update(res)) {
 			message = "Product succesfully changed";
-			window.getCatTree().refreshModel();
-			p = res;
+			ProductTable table = window.getProductTable();
+			table.updateRow(table.getSelectedRow(), res);	
 		} else {
-			message = "Cannot modify product" + product;
-			p = null;
+			message = "Cannot modify product" + product;			
 		}
 		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
 				"Edit Product", JOptionPane.INFORMATION_MESSAGE);
-		return p;
+	}
+	
+	/**
+	 * Removes product from the database
+	 * and products table of window parameter
+	 * @param window
+	 *            - parent window for dialogs
+	 * @param product
+	 *            - product to be deleted 
+	 * @return deleted product, or null if deletion was not performed
+	 * @throws DataLoadException
+	 *             if database problems occur
+	 * @throws XPathExpressionException
+	 */
+	public static void removeProductAction(MainWindow window, Product p) throws DataLoadException {
+		int confirm = JOptionPane.showConfirmDialog(window.getFrmGoodsBase(),
+				"Are you confident in deletion of product " + p + "?",
+				"Delete product", JOptionPane.YES_NO_OPTION);		
+		if (confirm == JOptionPane.YES_OPTION) {
+			String message;
+			if (Product.delete(p)) {
+				message = "Product deleted";
+				ProductTable table = window.getProductTable();
+				table.removeSelectedRow();
+			} else {
+				message = "Cannot delete product " + p;
+			}
+			JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+					"Category delete", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	/**
@@ -192,4 +218,6 @@ class Actions {
 				.getLastPathComponent();
 		return node;
 	}
+
+	
 }

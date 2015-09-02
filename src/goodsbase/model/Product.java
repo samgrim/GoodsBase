@@ -215,7 +215,7 @@ public class Product {
 	
 	private static QRequest getDeleteRequest(Product prod) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("DELETE FROM products WHERE id = " + prod.getId() + ";");
+		req.addQuery("DELETE FROM products WHERE prod_id = " + prod.getId() + ";");
 		return req;
 	}
 	

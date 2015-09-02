@@ -44,17 +44,20 @@ public class ProductTableMenuListener implements ActionListener{
 					}
 					Actions.addProductAction(window, c);			
 					break;
-				case "removeProduct":
+				case "removeProduct": {
+					if(rowIndex < 0) return;
+					Product p = window.getProductTable().
+							getProductAtRowIndex(rowIndex);
+					Actions.removeProductAction(window, p);
+				}
 					break;
-				case "editProduct":
+				case "editProduct": {
 					if(rowIndex < 0) return;
 					Product p = window.getProductTable().
 							getProductAtRowIndex(rowIndex);
 					if(p == null) return;
-					Product result = Actions.editProductAction(window, p);
-					if(result !=null) {
-						window.getProductTable().updateRow(rowIndex, result);
-					}
+					Actions.editProductAction(window, p);
+				}
 					break;
 				case "viewProductAtWh":
 					break;				

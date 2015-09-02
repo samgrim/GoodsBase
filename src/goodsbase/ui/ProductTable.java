@@ -104,6 +104,12 @@ public class ProductTable extends JTable {
 		model.addRow(row);
 	}
 	
+	public void removeSelectedRow(){
+		int row = this.getSelectedRow();
+		if(row <0) return;
+		((DefaultTableModel)this.getModel()).removeRow(row);
+	}
+	
 	/**
 	 * 
 	 */
