@@ -54,11 +54,12 @@ class Actions {
 	 *            - parent window for dialogs
 	 * @param product
 	 *            - product to be edited 
+	 * @return resulting product
 	 * @throws DataLoadException
 	 *             if database problems occur
 	 * @throws XPathExpressionException
 	 */
-	public static void editProductAction(MainWindow window, Product product)
+	public static Product editProductAction(MainWindow window, Product product)
 			throws DataLoadException, XPathExpressionException {
 
 		EditProductDialog dialog = EditProductDialog.getEditDialog(
@@ -66,16 +67,20 @@ class Actions {
 		dialog.setVisible(true);
 		Product res = dialog.getResult();
 		if (res == null)
-			return;
+			return null;
 		String message;
+		Product p;
 		if (Product.update(res)) {
 			message = "Product succesfully changed";
 			window.getCatTree().refreshModel();
+			p = res;
 		} else {
 			message = "Cannot modify product" + product;
+			p = null;
 		}
 		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
 				"Edit Product", JOptionPane.INFORMATION_MESSAGE);
+		return p;
 	}
 
 	/**

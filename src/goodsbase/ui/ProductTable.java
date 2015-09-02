@@ -75,9 +75,39 @@ public class ProductTable extends JTable {
 		}
 	}
 	
+	public void updateRow(int rowIndex, Product result) {
+		DefaultTableModel model = (DefaultTableModel) this.getModel();
+		String available;
+		Object[] row;
+		switch(productColomnIndex) {
+		case 0:
+			row = new Object[4];
+			available = (String) model.getValueAt(rowIndex, 3);
+			row[0] = result;
+			row[1] = result.getManufacturer();
+			row[2] = result.getTradeMark();
+			row[3] = available;
+			break;
+		case 1:
+			row = new Object[5];
+			available = (String) model.getValueAt(rowIndex, 4);
+			row[0] = result.getCategory();
+			row[1] = result;
+			row[2] = result.getManufacturer();
+			row[3] = result.getTradeMark();
+			row[4] = available;
+			break;
+		default:
+			return;
+		}
+		model.removeRow(rowIndex);
+		model.addRow(row);
+	}
+	
 	/**
 	 * 
 	 */
 	private int productColomnIndex = -1;
 	private static final long serialVersionUID = 8465178028674334977L;
+	
 }

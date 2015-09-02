@@ -173,7 +173,7 @@ public class Product {
 		return false;
 	}
 	
-	public static Product parse(XPath xpath, Node n, Category cat) throws NumberFormatException, XPathExpressionException{		
+	public static Product parse(XPath xpath, Node n, Category cat) throws NumberFormatException, XPathExpressionException{	
 		Product p = new Product(Integer.valueOf(xpath.evaluate("PROD_ID", n)),
 					xpath.evaluate("PROD_NAME", n),
 					xpath.evaluate("PROD_DESCRIPTION", n),
@@ -203,12 +203,13 @@ public class Product {
 	
 	private static QRequest getUpdateRequest(Product prod) {
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("UPDATE products SET prod_name ='" + prod.getName() 
+		String query = "UPDATE products SET prod_name ='" + prod.getName() 
 				+ "', prod_description ='" + prod.getDescription()
 				+"', prod_trade_mark = '" + prod.getTradeMark()
 				+"', prod_manufacturer = '" + prod.getManufacturer()
 				+"', prod_category_id = '" + prod.getCategory().getId()
-				+"' WHERE prod_id = "+prod.getId()+";");
+				+"' WHERE prod_id = "+prod.getId()+";";
+		req.addQuery(query);
 		return req;
 	}
 	
