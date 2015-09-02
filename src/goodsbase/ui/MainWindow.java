@@ -1,13 +1,10 @@
 package goodsbase.ui;
 
-import goodsbase.model.Product;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -18,8 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 public class MainWindow {
@@ -80,21 +75,9 @@ public class MainWindow {
 		frmGoodsBase.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
 		/*product table*/
-		productTable = new JTable(){
-			@Override
-			public String getToolTipText(MouseEvent event) {
-				java.awt.Point p = event.getPoint();
-                int rowIndex = rowAtPoint(p);
-                if(rowIndex!=-1) {
-                	return ((Product)getValueAt(rowIndex, 0))
-                				.getDescription();
-                }
-                return "";
-			}
-		};
-		productTable.setAutoCreateRowSorter(true);
+		productTable = new ProductTable();
 		productTable.addMouseListener( new ProductTableMouseAdapter(this));
-		productTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	
 		/*product table popup menu*/
 		ActionListener actListener = new ProductTableMenuListener(this);
 		JPopupMenu tablePopupMenu = new JPopupMenu();		
@@ -134,7 +117,7 @@ public class MainWindow {
 		return frmGoodsBase;
 	}
 
-	public JTable getProductTable() {
+	public ProductTable getProductTable() {
 		return productTable;
 	}
 
@@ -144,7 +127,7 @@ public class MainWindow {
 
 
 	private JFrame frmGoodsBase;
-	private JTable productTable;
+	private ProductTable productTable;
 	private CategoryTree catTree;
 
 }

@@ -60,28 +60,19 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 	private void doubleClickEvent(){
 		DefaultMutableTreeNode node = 
 					(DefaultMutableTreeNode)window.getCatTree().getSelectionPath().getLastPathComponent();
-		DefaultTableModel tableModel = new DefaultTableModel(){				
-			@Override
-			    public boolean isCellEditable(int row, int column) {
-			       //all cells false
-			       return false;
-			    }		
-			private static final long serialVersionUID = 2901615843314533198L;
-		};	
+		/*return if errors in category tree*/
+		if(node.getUserObject() instanceof String 
+				&& ((String)node.getUserObject()).equals(CategoryTree.ERROR_STRING)) {
+			return;
+		}		
 		try {
-			if(node.getUserObject() instanceof Category) {			
-				String[] colomns = {"Name", "Trade Mark", "Manufacturer", "Available at warehouse"};
-				tableModel.setDataVector(Loaders.getProductsAsArray((Category)node.getUserObject()), colomns);
-			} else if(node.getUserObject() instanceof String 
-					&& ((String)node.getUserObject()).equals(CategoryTree.ROOT_STRING))	{
-				String[] colomns = {"Category", "Name", "Trade Mark", "Manufacturer", "Available at warehouse"};
-				tableModel.setDataVector(Loaders.getProductsAsArray(), colomns);
-			}
+			Category cat = (node.getUserObject() instanceof Category)?
+					(Category)node.getUserObject()
+					: null;
+			window.getProductTable().loadProducts(cat);					
 		} catch (XPathExpressionException | DataLoadException e1) {
-			tableModel = new DefaultTableModel();
 			JOptionPane.showMessageDialog(window.getCatTree().getParent(), "Failed to load products");
-		}
-		window.getProductTable().setModel(tableModel);		
+		}	
 	}
 	
 	private void popupEvent(MouseEvent e) {

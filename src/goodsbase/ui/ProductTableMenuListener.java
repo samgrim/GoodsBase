@@ -3,6 +3,7 @@ package goodsbase.ui;
 
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
+import goodsbase.model.Product;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,10 +27,21 @@ public class ProductTableMenuListener implements ActionListener{
 			switch(e.getActionCommand()) {
 				default: break;
 				case "addProduct":	
-					DefaultMutableTreeNode node = Actions.getSelectedNode(window.getCatTree());
-					Category c =  ((node.getUserObject() instanceof Category)? 
-							(Category)node.getUserObject() 
-							: null);
+					int rowIndex = window.getProductTable().getSelectedRow();
+					Category c;
+					/*if no rows selected in table
+					 * get selected category in tree,
+					 * else continue with null value*/
+					if(rowIndex < 0) {
+						DefaultMutableTreeNode node = Actions.getSelectedNode(window.getCatTree());
+						c =  ((node.getUserObject() instanceof Category)? 
+								(Category)node.getUserObject() 
+								: null);
+					} else {
+						Product p = window.getProductTable().
+								getProductAtRowIndex(rowIndex);
+						c = (p!=null)? p.getCategory() : null;
+					}
 					Actions.addProductAction(window, c);			
 					break;
 				case "removeProduct":
