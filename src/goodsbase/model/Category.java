@@ -110,7 +110,7 @@ public class Category {
 	/**Loads list of categories from server database
 	 * @throws DataLoadException 
 	 **/
-	public static Set<Category> load() throws DataLoadException {		
+	public static Set<Category> loadAsSet() throws DataLoadException {		
 		Document doc = DataLoader.load(getSelectRequest());
 		try {
 			return parse(doc);
@@ -118,6 +118,7 @@ public class Category {
 			throw new DataLoadException(e);
 		}
 	}
+		
 	/**Removes category from the server database
 	 * @throws DataLoadException 
 	 **/
@@ -223,12 +224,12 @@ public class Category {
 	//TODO:remove
 	public static void main(String[] args) throws Exception {
 		QServer.start();
-		Set<Category> cat = Category.load();
+		Set<Category> cat = Category.loadAsSet();
 	
 		for(Category c:cat) {
 			System.out.println(c);
 		}
-		cat = Category.load();
+		cat = Category.loadAsSet();
 		QServer.stop();
 	}
 
