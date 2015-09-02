@@ -73,9 +73,23 @@ public class EditProductDialog extends JDialog implements ActionListener {
 		if (e.getActionCommand().equals("Cancel")) {
 			this.dispose();
 		} else if (e.getActionCommand().equals("OK")) {
-			result = new Product(name.getText(), description.getText(),
-					tradeMark.getText(), manufacturer.getText(),
-					(Category) categoryBox.getSelectedItem());
+			switch (mode) {
+			default:
+			case EDIT_MODE:
+				result = initProd;
+				result.setDescription(description.getText());
+				result.setName(name.getText());
+				result.setCategory((Category) categoryBox.getSelectedItem());
+				result.setManufacturer(manufacturer.getText());
+				result.setTradeMark(tradeMark.getText());
+				break;
+			case INSERT_MODE:
+				result = new Product(name.getText(), description.getText(),
+						tradeMark.getText(), manufacturer.getText(),
+						(Category) categoryBox.getSelectedItem());
+				break;
+			}
+			
 			this.dispose();
 		}
 	}
@@ -83,6 +97,8 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	private EditProductDialog(Frame owner, int mode, Category cat, Product prod)
 			throws DataLoadException, XPathExpressionException {
 		super(owner);
+		this.mode = mode;
+		this.initProd = prod;
 		setSize(450, 300);
 		setLocation((int) owner.getLocation().getX() + owner.getWidth() / 4,
 				(int) owner.getLocation().getY() + owner.getHeight() / 4);
@@ -128,6 +144,7 @@ public class EditProductDialog extends JDialog implements ActionListener {
 			name.setText(prod.getName());
 			tradeMark.setText(prod.getTradeMark());
 			manufacturer.setText(prod.getManufacturer());
+			description.setText(prod.getDescription());
 			break;
 		case INSERT_MODE:
 			setTitle("Add a new product");
@@ -309,6 +326,8 @@ public class EditProductDialog extends JDialog implements ActionListener {
 	private JTextField tradeMark;
 	private JTextArea description;
 	private JComboBox<Category> categoryBox;
+	private int mode;
+	private Product initProd;
 
 	/**
 	 * 

@@ -72,7 +72,11 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 	 */
 	private EditCategoryDialog(Frame owner, Category category, int mode)
 			throws DataLoadException, XPathExpressionException {
-		super(owner);
+		super(owner);	
+		
+		this.initCategory = category;
+		this.mode = mode;
+		
 		setModal(true);
 		setSize(450, 300);
 		setLocation((int) owner.getLocation().getX() + owner.getWidth() / 4,
@@ -200,8 +204,20 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 		if (e.getActionCommand().equals("Cancel")) {
 			this.dispose();
 		} else if (e.getActionCommand().equals("OK")) {
-			result = new Category((Category) parentCat.getSelectedItem(),
-					name.getText(), description.getText());
+			switch (mode) {
+			default:
+			case EDIT_MODE:
+				result = initCategory;
+				result.setDescription(description.getText());
+				result.setName(name.getText());
+				result.setParent((Category) parentCat.getSelectedItem());
+				break;
+			case INSERT_MODE:
+				result = new Category((Category) parentCat.getSelectedItem(),
+						name.getText(), description.getText());
+				break;
+			}
+			
 			this.dispose();
 		}
 	}
@@ -230,7 +246,8 @@ public class EditCategoryDialog extends JDialog implements ActionListener {
 	private JTextArea description;
 	private Category result;
 	private JComboBox<Category> parentCat;
-
+	private Category initCategory;
+	private int mode;
 	/**
 	 * 
 	 */
