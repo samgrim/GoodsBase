@@ -10,124 +10,160 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-/**
+/**Contains methods to perform various menu actions
  * @author Daria
- *
+ * 
  */
-class Actions {	
-	
-	public static void addProductAction(MainWindow window) throws DataLoadException {
-		DefaultMutableTreeNode node = getSelectedNode(window.getCatTree());
-		Category c =  ((node.getUserObject() instanceof Category)? 
-				(Category)node.getUserObject() 
-				: null);
-		EditProductDialog dialog = EditProductDialog.getAddDialog(window.getFrmGoodsBase(), c);
+class Actions {
+	/**Adds a product to database
+	 * @param window - parent window for dialogs
+	 * @param selected  - the category will be initially selected at dialog window
+	 * @throws DataLoadException if database problems occur*/
+	public static void addProductAction(MainWindow window, Category selected)
+			throws DataLoadException {
+		EditProductDialog dialog = EditProductDialog.getAddDialog(
+				window.getFrmGoodsBase(), selected);
 		dialog.setVisible(true);
 		Product res = dialog.getResult();
-		if(res == null) return;
+		if (res == null)
+			return;
 		String message;
-	
-		if(Product.insert(res)){
+		if (Product.insert(res)) {
 			message = "Product succesfully added";
-			window.getCatTree().refreshModel();
 		} else {
-			message = "Cannot add product" + c;
+			message = "Cannot add product" + selected;
 		}
-		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message, "Add Product", JOptionPane.INFORMATION_MESSAGE);		
+		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+				"Add Product", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public static void editProductAction(MainWindow window) throws DataLoadException {
+	
+	/**Edits product and writes it to database
+	 * @param window - parent window for dialogs
+	 * @throws DataLoadException if database problems occur
+	 */
+	public static void editProductAction(MainWindow window)
+			throws DataLoadException {
 		JTable table = window.getProductTable();
 		int row = table.getSelectedRow();
-		if(row < 0) return;
-		/*говнокоооод*/
+		if (row < 0)
+			return;
+		/* говнокоооод */
 		Product prod;
-		if(table.getColumnCount() == 4) {
+		if (table.getColumnCount() == 4) {
 			prod = (Product) table.getValueAt(row, 0);
 		} else if (table.getColumnCount() == 5) {
 			prod = (Product) table.getValueAt(row, 1);
-		} else return;
-		
-		EditProductDialog dialog = EditProductDialog.getEditDialog(window.getFrmGoodsBase(), prod);
+		} else
+			return;
+
+		EditProductDialog dialog = EditProductDialog.getEditDialog(
+				window.getFrmGoodsBase(), prod);
 		dialog.setVisible(true);
 		Product res = dialog.getResult();
-		if(res == null) return;
-		String message;	
-		if(Product.update(res)){
+		if (res == null)
+			return;
+		String message;
+		if (Product.update(res)) {
 			message = "Product succesfully changed";
 			window.getCatTree().refreshModel();
 		} else {
 			message = "Cannot modify product" + prod;
 		}
-		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message, "Edit Product", JOptionPane.INFORMATION_MESSAGE);		
+		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+				"Edit Product", JOptionPane.INFORMATION_MESSAGE);
 	}
-
-	public static void addCategoryAction(MainWindow window) throws DataLoadException{
-		DefaultMutableTreeNode node = getSelectedNode(window.getCatTree());
-		Category c =  ((node.getUserObject() instanceof Category)? 
-				(Category)node.getUserObject() 
-				: null);
-		EditCategoryDialog dialog = new EditCategoryDialog(window.getFrmGoodsBase(), c, EditCategoryDialog.INSERT_MODE);
+	
+	/**Adds a category to database and updates view
+	 * @param window - parent window for dialogs
+	 * @param selected  - the category will be initially selected 
+	 * as parent category at dialog window
+	 * @throws DataLoadException if database problems occur
+	 */
+	public static void addCategoryAction(MainWindow window, Category selected)
+			throws DataLoadException {
+		EditCategoryDialog dialog = new EditCategoryDialog(
+				window.getFrmGoodsBase(), selected,
+				EditCategoryDialog.INSERT_MODE);
 		dialog.setVisible(true);
 		Category res = dialog.getResult();
-		if(res == null) return;
+		if (res == null)
+			return;
 		String message;
-	
-		if(Category.insert(res)){
+
+		if (Category.insert(res)) {
 			message = "Category succesfully added";
 			window.getCatTree().refreshModel();
 		} else {
-			message = "Cannot add category " + c;
+			message = "Cannot add category " + selected;
 		}
-		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message, "Category insert", JOptionPane.INFORMATION_MESSAGE);		
+		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+				"Category insert", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public static void editCategoryAction(MainWindow window) throws DataLoadException{
-		DefaultMutableTreeNode node = getSelectedNode(window.getCatTree());
-		Category c =  ((node.getUserObject() instanceof Category)? 
-				(Category)node.getUserObject() 
-				: null);
-		EditCategoryDialog dialog = new EditCategoryDialog(window.getFrmGoodsBase(), c, EditCategoryDialog.EDIT_MODE);				
+	/**Edits category, writes it to database and updates view
+	 * @param window - parent window for dialogs
+	 * @param selected  - the category to edit
+	 * @throws DataLoadException if database problems occur
+	 */
+	public static void editCategoryAction(MainWindow window, 
+							Category selected) throws DataLoadException {
+
+		EditCategoryDialog dialog = new EditCategoryDialog(
+				window.getFrmGoodsBase(), selected,
+				EditCategoryDialog.EDIT_MODE);
 		dialog.setVisible(true);
 		Category res = dialog.getResult();
-		if(res == null) return;
+		if (res == null)
+			return;
 		String message;
-		if(Category.update(res)){
+		if (Category.update(res)) {
 			message = "Category updated";
-			node.setUserObject(res);
+			/*can be updated by setting another object
+			 * to the node, but at frame it looks like catN...
+			 * instead of catName*/
+			window.getCatTree().refreshModel();
 		} else {
-			message = "Cannot update category " + c;
+			message = "Cannot update category " + selected;
 		}
-		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message, "Category update", JOptionPane.INFORMATION_MESSAGE);
-		window.getCatTree().refreshModel();	
+		JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+				"Category update", JOptionPane.INFORMATION_MESSAGE);		
 	}
 	
-	public static void removeCategoryAction(MainWindow window) throws DataLoadException {
-		DefaultMutableTreeNode node = getSelectedNode(window.getCatTree());
-		Category c =  ((node.getUserObject() instanceof Category)? 
-				(Category)node.getUserObject() 
-				: null);
-		int confirm = JOptionPane.showConfirmDialog(window.getFrmGoodsBase(), 
-				"Are you confident in deletion of category " + c + "?", "Delete category", JOptionPane.YES_NO_OPTION);
-		if(confirm == JOptionPane.YES_OPTION) {
+	/**Removes category from database and updates view
+	 * @param window - parent window for dialogs
+	 * @param selected  - the category to edit
+	 * @param toRemove - node to be removed after the deletion performed
+	 * @throws DataLoadException if database problems occur
+	 */
+	public static void removeCategoryAction(MainWindow window,
+			Category selected, DefaultMutableTreeNode toRemove)
+			throws DataLoadException {
+		int confirm = JOptionPane.showConfirmDialog(window.getFrmGoodsBase(),
+				"Are you confident in deletion of category " + selected + "?",
+				"Delete category", JOptionPane.YES_NO_OPTION);
+		if (confirm == JOptionPane.YES_OPTION) {
 			String message;
-		
-			if(Category.delete(c)) {
+
+			if (Category.delete(selected)) {
 				message = "Category deleted";
-				window.getCatTree().getCurrentModel().removeNodeFromParent(node);
+				window.getCatTree().getCurrentModel()
+						.removeNodeFromParent(toRemove);
 			} else {
-				message = "Cannot delete category " + c;
+				message = "Cannot delete category " + selected;
 			}
-			JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message, "Category delete", JOptionPane.INFORMATION_MESSAGE);			
+			JOptionPane.showMessageDialog(window.getFrmGoodsBase(), message,
+					"Category delete", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
-	
-	private static DefaultMutableTreeNode getSelectedNode(JTree tree) {
+	/**@return the selected node of the JTree*/
+	public static DefaultMutableTreeNode getSelectedNode(JTree tree) {
 		TreePath path = tree.getSelectionPath();
 		if (path == null)
 			return null;
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
+				.getLastPathComponent();
 		return node;
 	}
 }

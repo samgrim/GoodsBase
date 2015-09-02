@@ -1,10 +1,13 @@
 
 package goodsbase.ui;
 
+import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * @author Daria
@@ -21,8 +24,12 @@ public class ProductTableMenuListener implements ActionListener{
 		try {
 			switch(e.getActionCommand()) {
 				default: break;
-				case "addProduct":			
-					Actions.addProductAction(window);			
+				case "addProduct":	
+					DefaultMutableTreeNode node = Actions.getSelectedNode(window.getCatTree());
+					Category c =  ((node.getUserObject() instanceof Category)? 
+							(Category)node.getUserObject() 
+							: null);
+					Actions.addProductAction(window, c);			
 					break;
 				case "removeProduct":
 					break;
