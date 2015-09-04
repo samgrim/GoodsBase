@@ -1,10 +1,14 @@
 package goodsbase.ui;
 
+import goodsbase.qserver.QServer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -54,6 +58,19 @@ public class MainWindow {
 		frmGoodsBase.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/Coin - Stacks (Silver)_24x24.gif")));
 		frmGoodsBase.setBounds(100, 100, 800, 600);
 		frmGoodsBase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmGoodsBase.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                try {
+					QServer.stop();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmGoodsBase.setJMenuBar(menuBar);
