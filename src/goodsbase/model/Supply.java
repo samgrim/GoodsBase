@@ -1,23 +1,22 @@
 package goodsbase.model;
 
-/**Describes a good at warehouse*/
-public class WarehouseItem {
+import goodsbase.qserver.QRequest;
 
+/**Describes a product at warehouse*/
+public class Supply {
+	
+	public enum Type {
+		ARRIVAL, WRITEOFF;
+	}
 
 	/**@throws NullPointerException if good or unit is null*/
 	/**@throws IllegalArgumentException if quantity or price is 0 or lesser*/
-	public WarehouseItem(Product prod, double quantity, Unit unit, double price) {
+	public Supply(Product prod, double quantity, Unit unit, double price, Type type) {
 		setProduct(prod);
 		setQuantity(quantity);
 		setUnit(unit);
 		setPrice(price);
-	}
-
-	/**
-	 * @return the product
-	 */
-	public Product getProduct() {
-		return product;
+		setType(type);
 	}
 
 	/**
@@ -28,25 +27,10 @@ public class WarehouseItem {
 		this.product = product;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	public double getQuantity() {
-		return quantity;
-	}
-
 	/**@throws IllegalArgumentException if quantity is 0 or lesser*/
 	public void setQuantity(double quantity) {
 		if(quantity <= 0) throw new  IllegalArgumentException("Quantity can't be 0 or negative");
 		this.quantity = quantity;
-	}
-
-	public Unit getUnit() {
-		return unit;
 	}
 
 	/**@throws NullPointerException if unit is null*/
@@ -54,53 +38,42 @@ public class WarehouseItem {
 		if(unit == null) throw new  NullPointerException("Unit can't be null");
 		this.unit = unit;
 	}
-
-	public double getPrice() {
-		return price;
-	}
 	
 	/**@throws IllegalArgumentException if price is 0 or lesser*/
 	public void setPrice(double price) {
 		if(price <= 0) throw new  IllegalArgumentException("Price can't be 0 or negative");
 		this.price = price;
+	}	
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(Type type) {
+		if(type == null) throw new  NullPointerException("Type can't be null");
+		this.type = type;
 	}
 
-
-	@Override
-	public int hashCode() {
-		final int prime = 15;
-		int result = 1;
-		result = prime * result + product.hashCode();
-		long temp;
-		temp = Double.doubleToLongBits(price);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + unit.hashCode();
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	/**Writes supply to database
+	 * @throws DataLoadException*/
+	public boolean addSupply(Supply s) throws DataLoadException{
+		String query = "INSERT INTO supplies (supplies_type, supplies_product_id, supplies_quantity,"
+				+ " supplies_units, suppplies_price) VALUES ("
+				+s.type + ", "
+				+s.product.getId() + ", "
+				+s.quantity + ", "
+				+s.unit + ", "
+				+s.price +");";
+		QRequest req = new QRequest(QRequest.Type.UPDATE);
+		req.addQuery(query);
+		int res = DataLoader.execute(req);
+		if (res == QRequest.OK_CODE)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		
-		WarehouseItem other = (WarehouseItem) obj;
-		if (!product.equals(other.product))
-			return false;
-		if (Double.doubleToLongBits(price) != Double
-				.doubleToLongBits(other.price))
-			return false;
-		if (unit != other.unit)
-			return false;
-		return true;
+		return false;
 	}
-	
-	private int id;
+
 	private Product product;
 	private double quantity;
 	private Unit unit;
 	private double price;
+	private Type type;
 }
