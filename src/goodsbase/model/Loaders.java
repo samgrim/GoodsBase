@@ -1,12 +1,8 @@
 /**
  * 
  */
-package goodsbase.util;
+package goodsbase.model;
 
-import goodsbase.model.Category;
-import goodsbase.model.DataLoadException;
-import goodsbase.model.DataLoader;
-import goodsbase.model.Product;
 import goodsbase.qserver.QRequest;
 
 import javax.xml.xpath.XPath;

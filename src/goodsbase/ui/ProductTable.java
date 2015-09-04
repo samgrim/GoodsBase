@@ -2,8 +2,8 @@ package goodsbase.ui;
 
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
+import goodsbase.model.Loaders;
 import goodsbase.model.Product;
-import goodsbase.util.Loaders;
 
 import java.awt.event.MouseEvent;
 
