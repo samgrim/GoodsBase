@@ -41,7 +41,7 @@ class QueryHandler implements Runnable {
 		} catch (IOException e) {
 			log.log(Level.WARNING,"Exception caught during request processing", e);
 		}
-		if (request != null) {
+		if (request != null) {			
 			switch (request.getType()){
 			case SELECT:
 				processSelect(request);
@@ -88,8 +88,7 @@ class QueryHandler implements Runnable {
 					writeResponse(task.getResult(), socket.getOutputStream());
 					task.close();
 				} catch (XMLStreamException | SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.log(Level.WARNING,"Exception caught during response writing", e);
 				}
 			} else {
 				out.write(String.valueOf(QRequest.ERROR_CODE));
