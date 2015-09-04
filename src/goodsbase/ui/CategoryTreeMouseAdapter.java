@@ -69,7 +69,7 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 			Category cat = (node.getUserObject() instanceof Category)?
 					(Category)node.getUserObject()
 					: null;
-			window.getProductTable().loadProducts(cat);					
+			window.getProductTable().loadItems(cat);					
 		} catch (XPathExpressionException | DataLoadException e1) {
 			JOptionPane.showMessageDialog(window.getCatTree().getParent(), "Failed to load products");
 		}	

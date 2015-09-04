@@ -18,7 +18,7 @@ import javax.xml.xpath.XPathExpressionException;
  */
 public class ProductTable extends JTable {
 
-	/**Creates a new product table*/ //капитан очевидность спешит на помощь
+	/**Creates a new product table*/ 
 	public ProductTable(){
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setAutoCreateRowSorter(true);
@@ -41,7 +41,7 @@ public class ProductTable extends JTable {
 	 * only for the specified category
 	 * @throws DataLoadException 
 	 * @throws XPathExpressionException */
-	public void loadProducts(Category cat) throws XPathExpressionException, DataLoadException {
+	public void loadItems(Category cat) throws XPathExpressionException, DataLoadException {
 		String[] colomns;
 		/*cells NOT editable*/
 		DefaultTableModel tableModel = new DefaultTableModel(){				
@@ -109,7 +109,6 @@ public class ProductTable extends JTable {
 		if(row <0) return;
 		((DefaultTableModel)this.getModel()).removeRow(row);
 	}
-	
 	/**
 	 * 
 	 */

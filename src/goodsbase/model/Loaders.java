@@ -78,7 +78,13 @@ public class Loaders {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * Loads data for the products table
+	 * 
+	 * @throws DataLoadException
+	 * @throws XPathExpressionException
+	 */
 	public static Object[][] getProductsAsArray() throws DataLoadException,
 			XPathExpressionException {
 		String query = "SELECT products.prod_id, products.prod_name, products.prod_description, products.prod_trade_mark,"
@@ -108,6 +114,31 @@ public class Loaders {
 				result[i][4] = "YES";
 			else
 				result[i][4] = "NO";
+		}
+		return result;
+	}
+	/**
+	 * Loads data for warehouse items
+	 * 
+	 * @throws DataLoadException
+	 * @throws XPathExpressionException
+	 */
+	public static Object[][] getWhItemsOn(Product p) throws DataLoadException, XPathExpressionException {
+		String query = "SELECT wh_quantity, wh_units, wh_price, wh_price*wh_quantity AS wh_total"
+				+ " FROM wh_items WHERE wh_product_id =" + p.getId() + ";";
+		QRequest req = new QRequest(QRequest.Type.SELECT);
+		req.addQuery(query);
+		Document doc = DataLoader.load(req);
+		XPathFactory xpfactory = XPathFactory.newInstance();
+		XPath xpath = xpfactory.newXPath();
+		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
+				XPathConstants.NODESET);
+		Object[][] result = new Object[nodes.getLength()][4];
+		for (int i = 0; i < result.length; i++) {
+			result[i][0] = xpath.evaluate("wh_quantity", nodes.item(i));
+			result[i][1] = xpath.evaluate("wh_units", nodes.item(i));
+			result[i][2] = xpath.evaluate("wh_price", nodes.item(i));
+			result[i][3] = xpath.evaluate("wh_total", nodes.item(i));
 		}
 		return result;
 	}
