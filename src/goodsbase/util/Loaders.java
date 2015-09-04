@@ -72,8 +72,8 @@ public class Loaders {
 		for (int i = 0; i < result.length; i++) {
 			p = Product.parse(xpath, nodes.item(i), cat);
 			result[i][0] = p;
-			result[i][1] = p.getManufacturer();
-			result[i][2] = p.getTradeMark();
+			result[i][1] = p.getTradeMark();
+			result[i][2] = p.getManufacturer();
 			result[i][3] = xpath.evaluate("availability", nodes.item(i));
 			if (Integer.valueOf((String) result[i][3]) > 0)
 				result[i][3] = "YES";
@@ -105,8 +105,8 @@ public class Loaders {
 			p = Product.parse(xpath, nodes.item(i), c);
 			result[i][0] = p.getCategory();
 			result[i][1] = p;
-			result[i][2] = p.getManufacturer();
-			result[i][3] = p.getTradeMark();
+			result[i][2] = p.getTradeMark();
+			result[i][3] = p.getManufacturer();
 			result[i][4] = xpath.evaluate("availability", nodes.item(i));
 			if (Integer.valueOf((String) result[i][4]) > 0)
 				result[i][4] = "YES";
