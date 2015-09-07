@@ -2,6 +2,8 @@ package goodsbase.model;
 
 import goodsbase.qserver.QRequest;
 
+import java.util.Date;
+
 /**Describes a product at warehouse*/
 public class Supply {
 	
@@ -23,7 +25,7 @@ public class Supply {
 	 * @param product the product to set
 	 */
 	public void setProduct(Product product) {
-		if(quantity <= 0) throw new  NullPointerException("product can't be null");
+		if(product == null) throw new  NullPointerException("product can't be null");
 		this.product = product;
 	}
 
@@ -53,15 +55,52 @@ public class Supply {
 		this.type = type;
 	}
 
+	
+	/**
+	 * @return the product
+	 */
+	public Product getProduct() {
+		return product;
+	}
+
+	/**
+	 * @return the quantity
+	 */
+	public double getQuantity() {
+		return quantity;
+	}
+
+	/**
+	 * @return the unit
+	 */
+	public Unit getUnit() {
+		return unit;
+	}
+
+	/**
+	 * @return the price
+	 */
+	public double getPrice() {
+		return price;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public Type getType() {
+		return type;
+	}
+
 	/**Writes supply to database
 	 * @throws DataLoadException*/
-	public boolean addSupply(Supply s) throws DataLoadException{
-		String query = "INSERT INTO supplies (supplies_type, supplies_product_id, supplies_quantity,"
-				+ " supplies_units, suppplies_price) VALUES ("
-				+s.type + ", "
+	public static boolean updateSupplies(Supply s) throws DataLoadException{
+		String query = "INSERT INTO supplies (supplies_date, supplies_type, supplies_product_id, supplies_quantity,"
+				+ " supplies_units, supplies_price) VALUES ("
+				+ new Date().getTime() + ", '"
+				+s.type + "', "
 				+s.product.getId() + ", "
-				+s.quantity + ", "
-				+s.unit + ", "
+				+s.quantity + ", '"
+				+s.unit + "', "
 				+s.price +");";
 		QRequest req = new QRequest(QRequest.Type.UPDATE);
 		req.addQuery(query);

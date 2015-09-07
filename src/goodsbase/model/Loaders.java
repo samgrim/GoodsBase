@@ -135,9 +135,9 @@ public class Loaders {
 				XPathConstants.NODESET);
 		Object[][] result = new Object[nodes.getLength()][4];
 		for (int i = 0; i < result.length; i++) {
-			result[i][0] = xpath.evaluate("wh_quantity", nodes.item(i));
-			result[i][1] = xpath.evaluate("wh_units", nodes.item(i));
-			result[i][2] = xpath.evaluate("wh_price", nodes.item(i));
+			result[i][0] = xpath.evaluate("WH_QUANTITY", nodes.item(i));
+			result[i][1] = xpath.evaluate("WH_UNITS", nodes.item(i));
+			result[i][2] = xpath.evaluate("WH_PRICE", nodes.item(i));
 			result[i][3] = xpath.evaluate("wh_total", nodes.item(i));
 		}
 		return result;

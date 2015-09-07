@@ -3,15 +3,23 @@ package goodsbase.ui;
 import goodsbase.model.DataLoadException;
 import goodsbase.model.Loaders;
 import goodsbase.model.Product;
+import goodsbase.model.Supply;
+import goodsbase.model.Unit;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -67,7 +75,7 @@ public class WhItemsWindow {
 		toolBar.setFloatable(false);
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
-		ActionListener lstnr = new WhItemListener();
+	
 		JButton btnRefreshButton = new JButton("Refresh table");
 		btnRefreshButton.setActionCommand("refresh");
 		btnRefreshButton.addActionListener(lstnr);
@@ -89,8 +97,20 @@ public class WhItemsWindow {
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoCreateRowSorter(true);
+		table.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e) {
+				/*select on click*/
+				//TODO: doesn't work fine
+				Point point = e.getPoint();
+			    final int currentRow = table.rowAtPoint(point);
+			    table.getSelectionModel().setSelectionInterval(currentRow, currentRow);
+			}
+		});
 		loadTableModel(table);
 		scrollPane.setViewportView(table);
+		
+		makeTableMenu();
 	}
 	
 	private void loadTableModel(JTable table) {	
@@ -111,11 +131,31 @@ public class WhItemsWindow {
 		}
 	}
 	
-	private JFrame frame;
-	private JTable table;
-	private Product prod;
-
-	private static final String[] tableCols = {"Quantity", "Units", "Price", "Total"};
+	private void makeTableMenu() {
+		JPopupMenu menu = new JPopupMenu();
+		JMenuItem item = new JMenuItem("Add supply");
+		item.setActionCommand("addWhItems");
+		item.addActionListener(lstnr);
+		menu.add(item);
+		item = new JMenuItem("Write off");
+		item.setActionCommand("removeWhItems");
+		item.addActionListener(lstnr);
+		menu.add(item);
+		item = new JMenuItem("View supply history");
+		item.setActionCommand("viewHistOnSupply");
+		item.addActionListener(lstnr);
+		menu.add(item);
+		table.setComponentPopupMenu(menu);
+	}
+	
+	private Supply getSelectedSupplyToWriteoff(){
+		int row  = table.getSelectedRow();
+		if (row < 0) return null;
+		double quantity = Double.valueOf((String)table.getValueAt(row, 0));
+		Unit unit = Unit.valueOf((String)table.getValueAt(row, 1));
+		double price = Double.valueOf((String)table.getValueAt(row, 2));
+		return new Supply(prod, quantity, unit, price, Supply.Type.WRITEOFF);
+	}
 	
 	private class WhItemListener implements ActionListener {
 		
@@ -125,10 +165,31 @@ public class WhItemsWindow {
 					loadTableModel(table);
 					break;
 				case "addWhItems":
+					JDialog dialog = new AddSupplyDialog(prod, frame);
+					dialog.setVisible(true);
+					//refresh
+					loadTableModel(table);
 					break;
 				case "removeWhItems":
+					Supply s= getSelectedSupplyToWriteoff();
+					if(s!=null){
+						JDialog dialog1 = new RemoveSupplyDialog(s);
+						dialog1.setVisible(true);
+						//refresh
+						loadTableModel(table);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Select a row to write products off");
+					}
 					break;
 			}
 		}
 	}
+	
+	
+	private JFrame frame;
+	private JTable table;
+	private Product prod;
+	private ActionListener lstnr = new WhItemListener();
+
+	private static final String[] tableCols = {"Quantity", "Units", "Price", "Total"};
 }
