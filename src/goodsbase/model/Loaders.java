@@ -98,6 +98,27 @@ public class Loaders {
 				+ " products.prod_category_id = categories.cat_id;";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
+		return getProducts(req);
+	}
+	
+	public static Object[][] search(String text) throws XPathExpressionException, DataLoadException {
+		/*for injections :)*/
+		String searchLine = text.replaceAll("'", "");
+		String query = "SELECT products.prod_id, products.prod_name, products.prod_description, products.prod_trade_mark,"
+				+ "products.prod_manufacturer, categories.cat_id, categories.cat_name,"
+				+ " categories.cat_description, categories.cat_parent_id, (SELECT COUNT(*) FROM wh_items WHERE wh_items.wh_product_id = products.prod_id)"
+				+ " as availability FROM products INNER JOIN categories ON"
+				+ " products.prod_category_id = categories.cat_id "
+				+ " WHERE products.prod_name LIKE '%" + searchLine + "%' OR"
+				+ " products.prod_description LIKE '%" + searchLine + "%' OR"
+				+ " products.prod_manufacturer LIKE '%" + searchLine + "%' ;";
+		QRequest req = new QRequest(QRequest.Type.SELECT);
+		req.addQuery(query);
+		return getProducts(req);	
+	}
+	
+	
+	private static Object[][] getProducts(QRequest req) throws DataLoadException, XPathExpressionException {
 		Document doc = DataLoader.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
@@ -121,6 +142,7 @@ public class Loaders {
 		}
 		return result;
 	}
+	
 	/**
 	 * Loads data for warehouse items
 	 * 

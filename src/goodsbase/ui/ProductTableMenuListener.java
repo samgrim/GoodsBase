@@ -5,6 +5,7 @@ import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
 import goodsbase.model.Product;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -60,7 +61,20 @@ public class ProductTableMenuListener implements ActionListener{
 				}
 					break;
 				case "viewProductAtWh":
-					break;				
+					final ProductTable table = window.getProductTable();
+				    final int currentRow = table.getSelectedRow();
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {	
+							Product p = table.getProductAtRowIndex(currentRow);
+							WhItemsWindow wd = new WhItemsWindow(p);
+							wd.getFrame().setVisible(true);					
+						}
+					});
+					break;
+				case "search":
+					window.getProductTable().loadSearchResult(
+							window.getSearchField().getText());
+					break;
 			}
 		} catch (DataLoadException | XPathExpressionException e1) {
 			// TODO Auto-generated catch block

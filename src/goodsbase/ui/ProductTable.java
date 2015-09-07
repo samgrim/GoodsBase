@@ -65,6 +65,22 @@ public class ProductTable extends JTable {
 		this.setModel(tableModel);
 	}
 	
+	public void loadSearchResult(String searchLine) throws XPathExpressionException, DataLoadException {
+		String[] colomns = new String[] {"Category", "Name", "Trade Mark", "Manufacturer", "Available at warehouse"};
+		/*cells NOT editable*/
+		DefaultTableModel tableModel = new DefaultTableModel(){				
+			@Override
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }		
+			private static final long serialVersionUID = 2901615843314533198L;
+		};
+		productColomnIndex = 1;
+		tableModel.setDataVector(Loaders.search(searchLine), colomns);
+		this.setModel(tableModel);
+	}
+	
 	/**@return product of the selected row of table,
 	 * can return null value if no product presents in the specified row*/
 	public Product getProductAtRowIndex(int rowIndex) {
