@@ -3,6 +3,10 @@
  */
 package goodsbase.model;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import goodsbase.qserver.QRequest;
 
 import javax.xml.xpath.XPath;
@@ -139,6 +143,41 @@ public class Loaders {
 			result[i][1] = xpath.evaluate("WH_UNITS", nodes.item(i));
 			result[i][2] = xpath.evaluate("WH_PRICE", nodes.item(i));
 			result[i][3] = xpath.evaluate("wh_total", nodes.item(i));
+		}
+		return result;
+	}
+	
+	/**
+	 * Loads data for supplies view
+	 * 
+	 * @throws DataLoadException
+	 * @throws XPathExpressionException
+	 */
+	public static Object[][] getSuppliesOn(Product p) throws DataLoadException, XPathExpressionException {
+		String query = "SELECT supplies_date, supplies_type, supplies_price, supplies_units, supplies_quantity, supplies_price*supplies_quantity AS supplies_total"
+				+ " FROM supplies WHERE supplies_product_id =" + p.getId() + ";";
+		return getSupplies(query);
+	}
+	
+	private static Object[][] getSupplies(String query) throws DataLoadException, XPathExpressionException {
+		QRequest req = new QRequest(QRequest.Type.SELECT);
+		req.addQuery(query);
+		Document doc = DataLoader.load(req);
+		XPathFactory xpfactory = XPathFactory.newInstance();
+		XPath xpath = xpfactory.newXPath();
+		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
+				XPathConstants.NODESET);
+		Object[][] result = new Object[nodes.getLength()][6];
+		DateFormat format = new SimpleDateFormat("MMM. dd, yyyy - HH:mm");
+		Date d;
+		for (int i = 0; i < result.length; i++) {
+			d = new Date(Long.valueOf(xpath.evaluate("SUPPLIES_DATE", nodes.item(i))));
+			result[i][0] = format.format(d);
+			result[i][1] = xpath.evaluate("SUPPLIES_TYPE", nodes.item(i));
+			result[i][2] = xpath.evaluate("SUPPLIES_PRICE", nodes.item(i));
+			result[i][3] = xpath.evaluate("SUPPLIES_UNITS", nodes.item(i));
+			result[i][4] = xpath.evaluate("SUPPLIES_QUANTITY", nodes.item(i));
+			result[i][5] = xpath.evaluate("supplies_total", nodes.item(i));
 		}
 		return result;
 	}

@@ -26,6 +26,7 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.xpath.XPathExpressionException;
+import javax.swing.SwingConstants;
 
 /**Application window for warehouse items*/
 public class WhItemsWindow {
@@ -90,6 +91,12 @@ public class WhItemsWindow {
 		btnWriteOff.setActionCommand("removeWhItems");
 		btnWriteOff.addActionListener(lstnr);
 		toolBar.add(btnWriteOff);
+		
+		JButton btnViewHistory = new JButton("View history");
+		btnViewHistory.setHorizontalAlignment(SwingConstants.RIGHT);
+		btnViewHistory.setActionCommand("viewHistOnSupply");
+		btnViewHistory.addActionListener(lstnr);
+		toolBar.add(btnViewHistory);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -181,6 +188,10 @@ public class WhItemsWindow {
 						JOptionPane.showMessageDialog(frame, "Select a row to write products off");
 					}
 					break;
+				case "viewHistOnSupply":
+					JFrame fr = new SuppliesFrame(prod);
+					fr.setVisible(true);
+				break;
 			}
 		}
 	}
