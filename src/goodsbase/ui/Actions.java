@@ -1,11 +1,13 @@
 package goodsbase.ui;
 
+import java.awt.Frame;
+
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
 import goodsbase.model.Product;
+import goodsbase.model.Supply;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -208,6 +210,7 @@ class Actions {
 					"Category delete", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	
 
 	/** @return the selected node of the JTree */
 	public static DefaultMutableTreeNode getSelectedNode(JTree tree) {

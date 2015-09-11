@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -20,9 +21,26 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 
-public class MainWindow {
+public class MainWindow implements ActionListener{
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("stats")){
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						StatsViewerFrame frame = new StatsViewerFrame();
+						frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+		
+	}
 
 	/**
 	 * Launch the application.
@@ -78,14 +96,24 @@ public class MainWindow {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
-		JMenuItem mntmOpen = new JMenuItem("Open");
-		mnFile.add(mntmOpen);
+		JMenuItem mntmStats = new JMenuItem("Statistics");
+		mntmStats.setActionCommand("stats");
+		mntmStats.addActionListener(this);
+		mnFile.add(mntmStats);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.setHorizontalAlignment(SwingConstants.TRAILING);
 		mntmAbout.setHorizontalTextPosition(SwingConstants.LEFT);
 		mntmAbout.setSize(new Dimension(77, 2));
 		menuBar.add(mntmAbout);
+		
+		ActionListener actListener = new ProductTableMenuListener(this);
+		searchField = new JTextField();
+		searchField.setToolTipText("Search");
+		menuBar.add(searchField);
+		searchField.setColumns(20);
+		searchField.addActionListener(actListener);
+		searchField.setActionCommand("search");
 		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.15);
@@ -96,7 +124,7 @@ public class MainWindow {
 		productTable.addMouseListener( new ProductTableMouseAdapter(this));
 	
 		/*product table popup menu*/
-		ActionListener actListener = new ProductTableMenuListener(this);
+		
 		JPopupMenu tablePopupMenu = new JPopupMenu();		
 		JMenuItem item = new JMenuItem("Add Product");
 		item.setActionCommand("addProduct");
@@ -143,8 +171,17 @@ public class MainWindow {
 	}
 
 
+	/**
+	 * @return the searchField
+	 */
+	public JTextField getSearchField() {
+		return searchField;
+	}
+
+
 	private JFrame frmGoodsBase;
 	private ProductTable productTable;
 	private CategoryTree catTree;
+	private JTextField searchField;
 
 }
