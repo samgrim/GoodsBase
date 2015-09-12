@@ -97,6 +97,12 @@ public class DbConnection {
 					+ "SUPPLIES_QUANTITY REAL NOT NULL,"
 					+ "SUPPLIES_UNITS TEXT NOT NULL,"
 					+ "SUPPLIES_PRICE REAL NOT NULL);");
+			stat.executeUpdate("CREATE table IF NOT EXISTS USERS ("
+						+"USER_ID INTEGER PRIMARY KEY, "
+						+"USERNAME TEXT UNIQUE NOT NULL, "
+						+"PASSWORD TEXT NOT NULL, "
+						+"ROLE TEXT NOT NULL"
+						+");");
 			stat.executeUpdate("CREATE TRIGGER IF NOT EXISTS update_whitems_1 BEFORE INSERT ON supplies "
 									+" WHEN NOT EXISTS(SELECT * FROM wh_items "
 													+"WHERE wh_product_id = NEW.supplies_product_id "

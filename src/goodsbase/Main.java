@@ -1,6 +1,9 @@
 package goodsbase;
 
+import goodsbase.model.DataLoadException;
+import goodsbase.model.User;
 import goodsbase.qserver.QServer;
+import goodsbase.ui.AuthDialog;
 import goodsbase.ui.MainWindow;
 
 import java.io.IOException;
@@ -18,20 +21,66 @@ public class Main {
 	
 	private static final Logger log = Logger.getLogger(Main.class.getName());
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		initLogger();
 		setLookAndFeel();
 		
 		try {
-			QServer.start();
+			if(!QServer.isAlive())
+				QServer.start();
+			if(User.getUsersCount() == 0) {
+				if(createFirstUser())
+					JOptionPane.showMessageDialog(null, "User created");
+				else
+					JOptionPane.showMessageDialog(null, "Failed to create user");
+			} 
+			authUser();
+			if(currentUser == null)	{
+				JOptionPane.showMessageDialog(null, "Invalid credentials, try again.");
+				exit();
+			}
+			MainWindow.launch();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Failed to start server");
-			System.exit(1);
+			JOptionPane.showMessageDialog(null, "Failed to start application");
+			log.log(Level.SEVERE, "Failed to start application", e);
+			exit();
 		}
-			
-		MainWindow.launch();		
+				
 	}
 	
+	public static void exit() {
+		try {
+			QServer.stop();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.exit(1);		
+	}
+
+	/**
+	 * @return the currentUser
+	 */
+	public static User getCurrentUser() {
+		return currentUser;
+	}
+
+	private static void authUser() {
+		AuthDialog dialog = new AuthDialog(AuthDialog.LOGIN);
+		dialog.setVisible(true);
+		currentUser = dialog.getResult();
+	}
+
+	private static boolean createFirstUser() throws DataLoadException {		
+		AuthDialog dialog = new AuthDialog(AuthDialog.NEW_ADMIN_USER);
+		dialog.setVisible(true);
+		User result = dialog.getResult();
+		if(result== null) 
+			return false;
+		return User.createUser(result);
+	}
+	
+
 	private static void initLogger(){
 		try {
 			LogManager.getLogManager().readConfiguration(
@@ -51,6 +100,5 @@ public class Main {
 		}		
 	}
 	
-
-
+	private static User currentUser;
 }

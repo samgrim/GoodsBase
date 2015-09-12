@@ -1,9 +1,10 @@
 package goodsbase.ui;
 
-import goodsbase.qserver.QServer;
+import goodsbase.Main;
+import goodsbase.model.DataLoadException;
+import goodsbase.model.User;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,15 +13,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 
 public class MainWindow implements ActionListener{
@@ -81,12 +84,7 @@ public class MainWindow implements ActionListener{
             @Override
             public void windowClosing(WindowEvent e)
             {
-                try {
-					QServer.stop();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+               Main.exit();
             }
         });
 		
@@ -101,13 +99,54 @@ public class MainWindow implements ActionListener{
 		mntmStats.addActionListener(this);
 		mnFile.add(mntmStats);
 		
-		JMenuItem mntmAbout = new JMenuItem("About");
-		mntmAbout.setHorizontalAlignment(SwingConstants.TRAILING);
-		mntmAbout.setHorizontalTextPosition(SwingConstants.LEFT);
-		mntmAbout.setSize(new Dimension(77, 2));
-		menuBar.add(mntmAbout);
-		
 		ActionListener actListener = new ProductTableMenuListener(this);
+		
+		if(Main.getCurrentUser().getRole().equals("admin")) {
+			
+			ActionListener lsn = new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					AuthDialog dlg = new AuthDialog(e.getActionCommand());
+					String message;
+					dlg.setVisible(true);
+					User result = dlg.getResult();
+					try {
+						if(result != null && User.createUser(result)) {
+							message ="User created";
+						} else {
+							message = "Failed to create user";
+						}
+					} catch (DataLoadException e1) {
+						message = "Failed to create user";
+					}
+					JOptionPane.showMessageDialog(frmGoodsBase, message);
+				}
+				
+			};
+			JMenu mnAccounts = new JMenu("Accounts");
+			menuBar.add(mnAccounts);
+			
+			JMenuItem mntmCreateAdminAccount = new JMenuItem("Create admin account");
+			mntmCreateAdminAccount.setActionCommand(AuthDialog.NEW_ADMIN_USER);
+			mntmCreateAdminAccount.addActionListener(lsn);
+			mnAccounts.add(mntmCreateAdminAccount);
+			
+			JMenuItem mntmCreateWhmanagerAccount = new JMenuItem("Create wh-manager account");
+			mntmCreateWhmanagerAccount.setActionCommand(AuthDialog.NEW_WH_MAN_USER);
+			mntmCreateWhmanagerAccount.addActionListener(lsn);
+			mnAccounts.add(mntmCreateWhmanagerAccount);
+			
+			JMenuItem mntmCreateSalesmanagerAccount = new JMenuItem("Create sales-manager account");
+			mntmCreateSalesmanagerAccount.setActionCommand(AuthDialog.NEW_SAL_MAN_USER);
+			mntmCreateSalesmanagerAccount.addActionListener(lsn);
+			mnAccounts.add(mntmCreateSalesmanagerAccount);
+			
+		
+		}
+			
+		
+		
 		searchField = new JTextField();
 		searchField.setToolTipText("Search");
 		menuBar.add(searchField);
@@ -155,6 +194,13 @@ public class MainWindow implements ActionListener{
 		
 		JPanel statusBar = new JPanel();
 		frmGoodsBase.getContentPane().add(statusBar, BorderLayout.SOUTH);
+		statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
+		
+		JLabel lblLoggedInAs = new JLabel("Logged in as: ");
+		statusBar.add(lblLoggedInAs);
+		
+		JLabel lblLogin = new JLabel(Main.getCurrentUser().getUsername());
+		statusBar.add(lblLogin);
 	}
 	
 
