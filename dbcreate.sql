@@ -1,5 +1,5 @@
 CREATE table IF NOT EXISTS CATEGORIES (
-ID INTEGER PRIMARY KEY,
+CAT_ID INTEGER PRIMARY KEY,
 CAT_NAME TEXT UNIQUE,
 CAT_DESCRIPTION TEXT,
 CAT_PARENT_ID INTEGER
@@ -40,6 +40,27 @@ USERNAME TEXT UNIQUE NOT NULL,
 PASSWORD TEXT NOT NULL,
 ROLE TEXT NOT NULL
 );
+
+CREATE TRIGGER IF NOT EXISTS delete_category BEFORE DELETE ON categories
+     WHEN EXISTS(SELECT * FROM products
+			WHERE prod_category_id = OLD.cat_id)
+BEGIN
+     SELECT RAISE(ABORT, 'category is not empty');
+END
+
+CREATE TRIGGER IF NOT EXISTS delete_category_1 BEFORE DELETE ON categories
+     WHEN EXISTS(SELECT * FROM categories
+			WHERE cat_parent_id = OLD.cat_id)
+BEGIN
+     SELECT RAISE(ABORT, 'category is not empty');
+END
+
+CREATE TRIGGER IF NOT EXISTS delete_product BEFORE DELETE ON products
+     WHEN EXISTS(SELECT * FROM wh_items
+			WHERE wh_product_id = OLD.prod_id)
+BEGIN
+     SELECT RAISE(ABORT, 'product is not empty');
+END
 
 //не дай бог их перепутать их порядок
 //вставка нового +

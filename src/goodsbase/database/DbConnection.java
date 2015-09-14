@@ -170,6 +170,27 @@ public class DbConnection {
 								+"BEGIN "
 								   +"SELECT RAISE(ABORT, 'insufficient quantity'); "
 								+"END");
+			
+			stat.executeUpdate("CREATE TRIGGER IF NOT EXISTS delete_category BEFORE DELETE ON categories "
+								     +"WHEN EXISTS(SELECT * FROM products "
+											+"WHERE prod_category_id = OLD.cat_id) "
+								+"BEGIN "
+								    + "SELECT RAISE(ABORT, 'category is not empty'); "
+								+"END ");
+
+			stat.executeUpdate("CREATE TRIGGER IF NOT EXISTS delete_product BEFORE DELETE ON products "
+								    + "WHEN EXISTS(SELECT * FROM wh_items "
+											+"WHERE wh_product_id = OLD.prod_id) "
+								+"BEGIN "
+								    + "SELECT RAISE(ABORT, 'product is not empty'); "
+								+"END ");
+			
+			stat.executeUpdate("CREATE TRIGGER IF NOT EXISTS delete_category_1 BEFORE DELETE ON categories "
+								    + "WHEN EXISTS(SELECT * FROM categories "
+											+"WHERE cat_parent_id = OLD.cat_id) "
+								+"BEGIN "
+								   + "SELECT RAISE(ABORT, 'category is not empty'); "
+								+"END ");
 			conn.commit();
 			log.info("Tables created");
 		} catch (SQLException e) {
