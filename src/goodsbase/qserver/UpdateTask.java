@@ -47,7 +47,7 @@ public class UpdateTask implements DbTask {
 		return exceptions;
 	}
 	
-	private static final Logger log = Logger.getLogger(BatchTask.class.getName());
+	private static final Logger log = Logger.getLogger(UpdateTask.class.getName());
 	private String query;
 	private List<SQLException> exceptions = new LinkedList<SQLException>();
 	private boolean complete = false;

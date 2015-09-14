@@ -29,11 +29,11 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * @author Daria
- *
+ * 
  */
 public class AddSupplyDialog extends JDialog implements ActionListener {
-	
-	/**Writes supply to database*/
+
+	/** Writes supply to database */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
@@ -41,30 +41,32 @@ public class AddSupplyDialog extends JDialog implements ActionListener {
 		} else if (e.getActionCommand().equals("OK")) {
 			try {
 				double sPrice = Double.valueOf(price.getText());
-				if(sPrice <= 0) {
+				if (sPrice <= 0) {
 					JOptionPane.showMessageDialog(this, "Wrong price value");
 					return;
 				}
 				double sQuantity = Double.valueOf(quantity.getText());
-				if(sQuantity <= 0) {
+				if (sQuantity <= 0) {
 					JOptionPane.showMessageDialog(this, "Wrong quantity value");
 					return;
 				}
-				Unit sUnit = (Unit)units.getSelectedItem();
-				Supply s = new Supply(prod, sQuantity, sUnit, sPrice, Supply.Type.ARRIVAL);
+				Unit sUnit = (Unit) units.getSelectedItem();
+				Supply s = new Supply(prod, sQuantity, sUnit, sPrice,
+						Supply.Type.ARRIVAL);
 				String message;
-				if(Supply.updateSupplies(s)) {
+				if (Supply.updateSupplies(s)) {
 					message = "Supply added";
 				} else {
 					message = "Cannot add supply";
 				}
 				JOptionPane.showMessageDialog(this, message);
 				this.dispose();
-			} catch(NumberFormatException e1) {
+			} catch (NumberFormatException e1) {
 				JOptionPane.showMessageDialog(this, "Check the entered data");
 			} catch (DataLoadException e2) {
 				log.log(Level.WARNING, "Failed to update supplies", e2);
-				JOptionPane.showMessageDialog(this, "Failed to update supplies");
+				JOptionPane
+						.showMessageDialog(this, "Failed to update supplies");
 			}
 		}
 	}

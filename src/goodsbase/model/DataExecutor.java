@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class DataLoader {
+public class DataExecutor {
 	
 	
 	/**Loads data from the server as an xml document

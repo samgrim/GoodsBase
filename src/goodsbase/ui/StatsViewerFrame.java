@@ -1,7 +1,7 @@
 package goodsbase.ui;
 
 import goodsbase.model.DataLoadException;
-import goodsbase.model.DataLoader;
+import goodsbase.model.DataExecutor;
 import goodsbase.qserver.QRequest;
 
 import java.awt.BorderLayout;
@@ -178,7 +178,7 @@ public class StatsViewerFrame extends JFrame {
 				+" FROM CATEGORIES AS CATS LEFT JOIN PRODUCTS ON PRODUCTS.PROD_CATEGORY_ID = CATS.CAT_ID GROUP BY CATS.CAT_ID ORDER BY CAT_PARENT_ID, CAT_NAME;";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		return DataLoader.load(req);
+		return DataExecutor.load(req);
 	}
 	
 	
@@ -249,7 +249,7 @@ public class StatsViewerFrame extends JFrame {
 							+" FROM PRODUCTS ORDER BY PROD_NAME;";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		return DataLoader.load(req);
+		return DataExecutor.load(req);
 	}
 
 	private JPanel contentPane;

@@ -15,34 +15,42 @@ import java.util.logging.Logger;
  * Contains method that creates a new connection using database settings*/
 public class DbConnection {
 	
-	/**Reads database settings from properties file and applies them.
-	 * @throws DbInitException*/
-	public static void init() throws DbInitException{		
+	/**
+	 * Reads database settings from properties file and applies them.
+	 * 
+	 * @throws DbInitException
+	 */
+	public static void init() throws DbInitException {
 		log.info("Initializing database properties...");
-		try(InputStream in = DbConnection.class.getResourceAsStream(propResName);){
+		try (InputStream in = DbConnection.class
+				.getResourceAsStream(propResName);) {
 			Properties prop = new Properties();
 			prop.load(in);
-			/*initializing params*/
+			/* initializing params */
 			url = prop.getProperty("db.url");
-			driverClass = prop.getProperty("db.driver");									
+			driverClass = prop.getProperty("db.driver");
 		} catch (IOException e) {
-			log.log(Level.WARNING, String.format("Failed reading %s resource", propResName), e);
-		}		
-		/*even if there's no exceptions, 
-		 * properties may be not configured properly*/
-		if(url != null && driverClass != null) {
-			log.info("Database properties OK");				
-		} else { 
+			log.log(Level.WARNING,
+					String.format("Failed reading %s resource", propResName), e);
+		}
+		/*
+		 * even if there's no exceptions, properties may be not configured
+		 * properly
+		 */
+		if (url != null && driverClass != null) {
+			log.info("Database properties OK");
+		} else {
 			if (url == null) {
 				log.warning("Missing property db.url");
-			} 
+			}
 			if (driverClass == null) {
 				log.warning("Missing property db.driver");
 			}
-			throw new DbInitException("Failed to initialize database properties");
+			throw new DbInitException(
+					"Failed to initialize database properties");
 		}
-		
-		/*loading driver*/
+
+		/* loading driver */
 		try {
 			log.info("Loading database driver...");
 			Class.forName(driverClass);
@@ -50,18 +58,21 @@ public class DbConnection {
 		} catch (ClassNotFoundException e) {
 			throw new DbInitException("Failed to load database driver", e);
 		}
-		
+
 		createTables();
 	}
 	
-	/**Creates a new database connection
-	 * @throws SQLException */
-	public static Connection getConnection() throws SQLException{
+	/**
+	 * Creates a new database connection
+	 * 
+	 * @throws SQLException
+	 */
+	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(url);
 	}
-	
-	/*Creates tables within a single transaction*/
-	private static void createTables() throws DbInitException{
+
+	/* Creates tables and triggers within a single transaction */
+	private static void createTables() throws DbInitException {
 		Connection conn = null;
 		Statement stat = null;
 		try {
@@ -197,26 +208,27 @@ public class DbConnection {
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
-				log.log(Level.WARNING, "Exception caught when rollback transaction", e);
+				log.log(Level.WARNING,
+						"Exception caught when rollback transaction", e);
 			}
-			throw new DbInitException("Failed to initialize database ", e);			
+			throw new DbInitException("Failed to initialize database ", e);
 		} finally {
 			try {
-				if(stat != null)			
-					stat.close();			
-				if(conn!=null)
+				if (stat != null)
+					stat.close();
+				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
 				log.log(Level.WARNING, "Failed to close connection", e);
 			}
-		}				
+		}
 	}
 	
-	
+	/*database url*/
 	private static String url;
-	
+	/*jdbc driver*/
 	private static String driverClass;
-	
+	/*configuration file*/
 	private static final String propResName = "/database.properties";
 	
 	private static final Logger log = Logger.getLogger(DbConnection.class.getName());

@@ -89,7 +89,7 @@ public class User {
 				+"', '"+ user.password +"', '"+user.role +"');";
 		QRequest request = new QRequest(QRequest.Type.UPDATE);
 		request.addQuery(query);
-		int result = DataLoader.execute(request);
+		int result = DataExecutor.execute(request);
 		if (result == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -101,7 +101,7 @@ public class User {
 						+ "where id="+user.id+");";
 		QRequest request = new QRequest(QRequest.Type.UPDATE);
 		request.addQuery(query);
-		int result = DataLoader.execute(request);
+		int result = DataExecutor.execute(request);
 		if (result == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -112,7 +112,7 @@ public class User {
 		QRequest request = new QRequest(QRequest.Type.SELECT);
 		request.addQuery(query);
 		Document doc;
-		doc = DataLoader.load(request);
+		doc = DataExecutor.load(request);
 		if (doc != null && doc.getChildNodes().getLength()>0) {
 			XPathFactory fact = XPathFactory.newInstance();
 			XPath xpath = fact.newXPath();
@@ -128,7 +128,7 @@ public class User {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
 		try {
-			Document doc = DataLoader.load(req);
+			Document doc = DataExecutor.load(req);
 			if (doc != null && doc.getChildNodes().getLength()>0)  {
 				XPathFactory fact = XPathFactory.newInstance();
 				XPath xpath = fact.newXPath();

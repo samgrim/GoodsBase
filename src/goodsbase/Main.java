@@ -15,28 +15,34 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+/**
+ * Main class that configures and starts application
+ * */
 public class Main {
-	
+
+	/** Logging config file */
 	private static final String loggingProps = "/logging.properties";
-	
+
 	private static final Logger log = Logger.getLogger(Main.class.getName());
-	
+
 	public static void main(String[] args) throws InterruptedException {
 		initLogger();
 		setLookAndFeel();
-		
+
 		try {
-			if(!QServer.isAlive())
+			if (!QServer.isAlive())
 				QServer.start();
-			if(User.getUsersCount() == 0) {
-				if(createFirstUser())
+			if (User.getUsersCount() == 0) {
+				if (createFirstUser())
 					JOptionPane.showMessageDialog(null, "User created");
 				else
-					JOptionPane.showMessageDialog(null, "Failed to create user");
-			} 
+					JOptionPane
+							.showMessageDialog(null, "Failed to create user");
+			}
 			authUser();
-			if(currentUser == null)	{
-				JOptionPane.showMessageDialog(null, "Invalid credentials, try again.");
+			if (currentUser == null) {
+				JOptionPane.showMessageDialog(null,
+						"Invalid credentials, try again.");
 				exit();
 			}
 			MainWindow.launch();
@@ -45,9 +51,10 @@ public class Main {
 			log.log(Level.SEVERE, "Failed to start application", e);
 			exit();
 		}
-				
+
 	}
-	
+
+	/* stops server */
 	public static void exit() {
 		try {
 			QServer.stop();
@@ -55,7 +62,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.exit(1);		
+		System.exit(1);
 	}
 
 	/**
@@ -71,34 +78,36 @@ public class Main {
 		currentUser = dialog.getResult();
 	}
 
-	private static boolean createFirstUser() throws DataLoadException {		
+	private static boolean createFirstUser() throws DataLoadException {
 		AuthDialog dialog = new AuthDialog(User.ADMIN);
 		dialog.setVisible(true);
 		User result = dialog.getResult();
-		if(result== null) 
+		if (result == null)
 			return false;
 		return User.createUser(result);
 	}
-	
 
-	private static void initLogger(){
+	/* initializes logger with properties defined in loggingProps */
+	private static void initLogger() {
 		try {
 			LogManager.getLogManager().readConfiguration(
 					Main.class.getResourceAsStream(loggingProps));
 		} catch (SecurityException | IOException e) {
-			log.log(Level.WARNING, "Failed reading resource " + loggingProps , e);
-		}		
+			log.log(Level.WARNING, "Failed reading resource " + loggingProps, e);
+		}
 	}
-	
-	private static void setLookAndFeel() {		
+
+	/* sets system look and feel for the application */
+	private static void setLookAndFeel() {
 		try {
-			UIManager.setLookAndFeel(
-			        UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			log.log(Level.WARNING, "Failed setting look and feel" + loggingProps , e);
-		}		
+			log.log(Level.WARNING, "Failed setting look and feel"
+					+ loggingProps, e);
+		}
 	}
-	
+
+	/* current application user */
 	private static User currentUser;
 }

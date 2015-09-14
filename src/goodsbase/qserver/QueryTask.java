@@ -73,7 +73,7 @@ class QueryTask implements ResultDbTask, AutoCloseable {
 		exceptions.add(e);
 	}
 
-	private static final Logger log = Logger.getLogger(BatchTask.class.getName());
+	private static final Logger log = Logger.getLogger(QueryTask.class.getName());
 	private String query;
 	private List<SQLException> exceptions = new LinkedList<SQLException>();
 	private boolean complete = false;

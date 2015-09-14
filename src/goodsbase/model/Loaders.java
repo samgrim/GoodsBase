@@ -35,7 +35,7 @@ public class Loaders {
 		String query = "SELECT * FROM categories ORDER BY cat_name;";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		Document doc = DataLoader.load(req);
+		Document doc = DataExecutor.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -61,7 +61,7 @@ public class Loaders {
 				+ cat.getId() + ";";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		Document doc = DataLoader.load(req);
+		Document doc = DataExecutor.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -119,7 +119,7 @@ public class Loaders {
 	
 	
 	private static Object[][] getProducts(QRequest req) throws DataLoadException, XPathExpressionException {
-		Document doc = DataLoader.load(req);
+		Document doc = DataExecutor.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -154,7 +154,7 @@ public class Loaders {
 				+ " FROM wh_items WHERE wh_product_id =" + p.getId() + ";";
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		Document doc = DataLoader.load(req);
+		Document doc = DataExecutor.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -184,7 +184,7 @@ public class Loaders {
 	private static Object[][] getSupplies(String query) throws DataLoadException, XPathExpressionException {
 		QRequest req = new QRequest(QRequest.Type.SELECT);
 		req.addQuery(query);
-		Document doc = DataLoader.load(req);
+		Document doc = DataExecutor.load(req);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,

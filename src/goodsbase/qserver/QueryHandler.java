@@ -1,4 +1,3 @@
-
 package goodsbase.qserver;
 
 import java.io.IOException;
@@ -16,17 +15,18 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-/**Communicates with client on socket,
- * confirms and sends queries for execution,
- * handles query results. 
+/**
+ * Communicates with client on socket, confirms and sends queries for execution,
+ * handles query results.
  * 
  * @author Daria
- *
+ * 
  */
 class QueryHandler implements Runnable {
 
 	/**
-	 * @param socket - connected socket
+	 * @param socket
+	 *            - connected socket
 	 */
 	public QueryHandler(Socket socket, QueryExecutor executor) {
 		this.socket = socket;
@@ -39,10 +39,11 @@ class QueryHandler implements Runnable {
 		try {
 			request = getRequest();
 		} catch (IOException e) {
-			log.log(Level.WARNING,"Exception caught during request processing", e);
+			log.log(Level.WARNING,
+					"Exception caught during request processing", e);
 		}
-		if (request != null) {			
-			switch (request.getType()){
+		if (request != null) {
+			switch (request.getType()) {
 			case SELECT:
 				processSelect(request);
 				break;
@@ -56,39 +57,49 @@ class QueryHandler implements Runnable {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			log.log(Level.WARNING,"Exception caught during socket closing", e);
+			log.log(Level.WARNING, "Exception caught during socket closing", e);
 		}
 	}
-	
+
 	private void processUpdate(QRequest request) {
 		UpdateTask task = new UpdateTask(request);
-		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) {	// out will be closed automatically
+		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) { // out
+																				// will
+																				// be
+																				// closed
+																				// automatically
 			executeTask(task);
-			if(task.getExceptions().size() == 0) {
+			if (task.getExceptions().size() == 0) {
 				out.write(String.valueOf(QRequest.OK_CODE));
 			} else {
 				out.write(String.valueOf(QRequest.ERROR_CODE));
 			}
 			out.close();
 		} catch (IOException e) {
-			log.log(Level.WARNING,"Exception caught during request processing", e);
-		} 
+			log.log(Level.WARNING,
+					"Exception caught during request processing", e);
+		}
 	}
 
 	private void processSelect(QRequest request) {
 		QueryTask task = new QueryTask(request);
-		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) {	// out will be closed automatically
+		try (PrintWriter out = new PrintWriter(socket.getOutputStream());) { // out
+																				// will
+																				// be
+																				// closed
+																				// automatically
 			executeTask(task);
-			if(task.getExceptions().size() == 0) {
+			if (task.getExceptions().size() == 0) {
 				out.write(String.valueOf(QRequest.OK_CODE));
 				out.write("\n");
 				out.flush();
-				//TODO: response must be ready before writing
+				// TODO: response must be ready before writing
 				try {
 					writeResponse(task.getResult(), socket.getOutputStream());
 					task.close();
 				} catch (XMLStreamException | SQLException e) {
-					log.log(Level.WARNING,"Exception caught during response writing", e);
+					log.log(Level.WARNING,
+							"Exception caught during response writing", e);
 				}
 			} else {
 				out.write(String.valueOf(QRequest.ERROR_CODE));
@@ -96,18 +107,21 @@ class QueryHandler implements Runnable {
 				out.flush();
 			}
 		} catch (IOException e) {
-			log.log(Level.WARNING,"Exception caught during request processing", e);
-		} 
+			log.log(Level.WARNING,
+					"Exception caught during request processing", e);
+		}
 	}
-	
-	private void executeTask(DbTask task){
+
+	private void executeTask(DbTask task) {
 		executor.addTask(task);
-		synchronized(task) {
-			while(!task.isComplete())
+		synchronized (task) {
+			while (!task.isComplete())
 				try {
 					task.wait();
 				} catch (InterruptedException e) {
-					log.log(Level.WARNING,"Something has interrupted waiting for task result", e);
+					log.log(Level.WARNING,
+							"Something has interrupted waiting for task result",
+							e);
 				}
 		}
 	}
@@ -120,34 +134,39 @@ class QueryHandler implements Runnable {
 			return null;
 		}
 	}
-	
-	/*writes Result set as xml file*/
-	private static void writeResponse(ResultSet set, OutputStream out) throws XMLStreamException, SQLException {
-		XMLOutputFactory factory = XMLOutputFactory.newInstance();	
-		XMLStreamWriter writer = null;	
+
+	/* writes Result set as xml file */
+	private static void writeResponse(ResultSet set, OutputStream out)
+			throws XMLStreamException, SQLException {
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
+		XMLStreamWriter writer = null;
 		ResultSetMetaData metaData = set.getMetaData();
 		int colsCount = metaData.getColumnCount();
 		try {
-			writer = factory.createXMLStreamWriter(out, "utf-8");	//!!important to set utf-8 directly				
+			writer = factory.createXMLStreamWriter(out, "utf-8"); // !!important
+																	// to set
+																	// utf-8
+																	// directly
 			writer.writeStartDocument();
 			writer.writeStartElement("result");
-			while(set.next()) {
+			while (set.next()) {
 				writer.writeStartElement("line");
-				for(int i = 1; i <= colsCount; i++) {
+				for (int i = 1; i <= colsCount; i++) {
 					writer.writeStartElement(metaData.getColumnLabel(i));
 					writer.writeCharacters(set.getString(i));
 					writer.writeEndElement();
 				}
 				writer.writeEndElement();
 			}
-			writer.writeEndDocument(); //closes "result"
-		} finally {		// close writer
-			if(writer != null)
+			writer.writeEndDocument(); // closes "result"
+		} finally { // close writer
+			if (writer != null)
 				writer.close();
 		}
 	}
-	
+
 	private Socket socket;
 	private QueryExecutor executor;
-	private static final Logger log = Logger.getLogger(QueryHandler.class.getName());
+	private static final Logger log = Logger.getLogger(QueryHandler.class
+			.getName());
 }

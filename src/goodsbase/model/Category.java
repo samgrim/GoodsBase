@@ -111,7 +111,7 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static Set<Category> loadAsSet() throws DataLoadException {		
-		Document doc = DataLoader.load(getSelectRequest());
+		Document doc = DataExecutor.load(getSelectRequest());
 		try {
 			return parse(doc);
 		} catch (XPathExpressionException e) {
@@ -123,7 +123,7 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean delete(Category cat) throws DataLoadException {
-		int res = DataLoader.execute(getDeleteRequest(cat));
+		int res = DataExecutor.execute(getDeleteRequest(cat));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -133,14 +133,14 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean update(Category cat) throws DataLoadException {
-		int res = DataLoader.execute(getUpdateRequest(cat));
+		int res = DataExecutor.execute(getUpdateRequest(cat));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
 	}
 	
 	public static boolean insert(Category cat) throws DataLoadException {
-		int res = DataLoader.execute(getInsertRequest(cat));
+		int res = DataExecutor.execute(getInsertRequest(cat));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;

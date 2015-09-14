@@ -148,7 +148,7 @@ public class Product {
 	 **/
 	//TODO: constraints
 	public static boolean delete(Product prod) throws DataLoadException {
-		int res = DataLoader.execute(getDeleteRequest(prod));
+		int res = DataExecutor.execute(getDeleteRequest(prod));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -160,14 +160,14 @@ public class Product {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean update(Product prod) throws DataLoadException {
-		int res = DataLoader.execute(getUpdateRequest(prod));
+		int res = DataExecutor.execute(getUpdateRequest(prod));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
 	}
 	
 	public static boolean insert(Product prod) throws DataLoadException {
-		int res = DataLoader.execute(getInsertRequest(prod));
+		int res = DataExecutor.execute(getInsertRequest(prod));
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
