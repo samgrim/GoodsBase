@@ -99,9 +99,8 @@ public class MainWindow implements ActionListener{
 		mntmStats.addActionListener(this);
 		mnFile.add(mntmStats);
 		
-		ActionListener actListener = new ProductTableMenuListener(this);
 		
-		if(Main.getCurrentUser().getRole().equals("admin")) {
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN)) {
 			
 			ActionListener lsn = new ActionListener(){
 
@@ -128,25 +127,25 @@ public class MainWindow implements ActionListener{
 			menuBar.add(mnAccounts);
 			
 			JMenuItem mntmCreateAdminAccount = new JMenuItem("Create admin account");
-			mntmCreateAdminAccount.setActionCommand(AuthDialog.NEW_ADMIN_USER);
+			mntmCreateAdminAccount.setActionCommand(User.ADMIN);
 			mntmCreateAdminAccount.addActionListener(lsn);
 			mnAccounts.add(mntmCreateAdminAccount);
 			
 			JMenuItem mntmCreateWhmanagerAccount = new JMenuItem("Create wh-manager account");
-			mntmCreateWhmanagerAccount.setActionCommand(AuthDialog.NEW_WH_MAN_USER);
+			mntmCreateWhmanagerAccount.setActionCommand(User.WH_MANAGER);
 			mntmCreateWhmanagerAccount.addActionListener(lsn);
 			mnAccounts.add(mntmCreateWhmanagerAccount);
 			
 			JMenuItem mntmCreateSalesmanagerAccount = new JMenuItem("Create sales-manager account");
-			mntmCreateSalesmanagerAccount.setActionCommand(AuthDialog.NEW_SAL_MAN_USER);
+			mntmCreateSalesmanagerAccount.setActionCommand(User.SAL_MANAGER);
 			mntmCreateSalesmanagerAccount.addActionListener(lsn);
 			mnAccounts.add(mntmCreateSalesmanagerAccount);
 			
 		
 		}
 			
-		
-		
+		/*same listener for tree popup*/
+		ActionListener actListener = new ProductTableMenuListener(this);
 		searchField = new JTextField();
 		searchField.setToolTipText("Search");
 		menuBar.add(searchField);
@@ -164,23 +163,26 @@ public class MainWindow implements ActionListener{
 	
 		/*product table popup menu*/
 		
-		JPopupMenu tablePopupMenu = new JPopupMenu();		
-		JMenuItem item = new JMenuItem("Add Product");
-		item.setActionCommand("addProduct");
-		item.addActionListener(actListener);
-		tablePopupMenu.add(item);
-		item = new JMenuItem("Edit Product");
-		item.setActionCommand("editProduct");
-		item.addActionListener(actListener);
-		tablePopupMenu.add(item);
-		item = new JMenuItem("Remove Product");
-		item.setActionCommand("removeProduct");
-		item.addActionListener(actListener);
-		tablePopupMenu.add(item);
-		item = new JMenuItem("View at warehouse (double click)");
+		JPopupMenu tablePopupMenu = new JPopupMenu();	
+		JMenuItem item = new JMenuItem("View at warehouse (double click)");
 		item.setActionCommand("viewProductAtWh");
 		item.addActionListener(actListener);
 		tablePopupMenu.add(item);
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) || 
+				Main.getCurrentUser().getRole().equals(User.WH_MANAGER)) {			
+			item = new JMenuItem("Add Product");
+			item.setActionCommand("addProduct");
+			item.addActionListener(actListener);
+			tablePopupMenu.add(item);
+			item = new JMenuItem("Edit Product");
+			item.setActionCommand("editProduct");
+			item.addActionListener(actListener);
+			tablePopupMenu.add(item);
+			item = new JMenuItem("Remove Product");
+			item.setActionCommand("removeProduct");
+			item.addActionListener(actListener);
+			tablePopupMenu.add(item);			
+		}
 		productTable.setComponentPopupMenu(tablePopupMenu);
 		
 		catTree = new CategoryTree();		

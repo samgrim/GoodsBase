@@ -23,6 +23,10 @@ import org.w3c.dom.Node;
  *
  */
 public class User {
+	
+	public static final String ADMIN = "admin";
+	public static final String WH_MANAGER = "whmanager";
+	public static final String SAL_MANAGER = "salesmanager";
 
 	/**
 	 * @throws NoSuchAlgorithmException 

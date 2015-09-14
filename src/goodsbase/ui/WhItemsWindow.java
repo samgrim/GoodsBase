@@ -1,10 +1,12 @@
 package goodsbase.ui;
 
+import goodsbase.Main;
 import goodsbase.model.DataLoadException;
 import goodsbase.model.Loaders;
 import goodsbase.model.Product;
 import goodsbase.model.Supply;
 import goodsbase.model.Unit;
+import goodsbase.model.User;
 
 import java.awt.BorderLayout;
 import java.awt.Point;
@@ -82,15 +84,21 @@ public class WhItemsWindow {
 		btnRefreshButton.addActionListener(lstnr);
 		toolBar.add(btnRefreshButton);
 		
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.WH_MANAGER)) {
 		JButton btnAddGoods = new JButton("Add goods");
 		btnAddGoods.setActionCommand("addWhItems");
 		btnAddGoods.addActionListener(lstnr);
 		toolBar.add(btnAddGoods);
+		}
 		
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.SAL_MANAGER)) {
 		JButton btnWriteOff = new JButton("Write goods off");
 		btnWriteOff.setActionCommand("removeWhItems");
 		btnWriteOff.addActionListener(lstnr);
 		toolBar.add(btnWriteOff);
+		}
 		
 		JButton btnViewHistory = new JButton("View history");
 		btnViewHistory.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -140,14 +148,23 @@ public class WhItemsWindow {
 	
 	private void makeTableMenu() {
 		JPopupMenu menu = new JPopupMenu();
-		JMenuItem item = new JMenuItem("Add supply");
-		item.setActionCommand("addWhItems");
-		item.addActionListener(lstnr);
-		menu.add(item);
-		item = new JMenuItem("Write off");
-		item.setActionCommand("removeWhItems");
-		item.addActionListener(lstnr);
-		menu.add(item);
+		JMenuItem item;
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.WH_MANAGER)) {
+			item = new JMenuItem("Add supply");
+			item.setActionCommand("addWhItems");
+			item.addActionListener(lstnr);
+			menu.add(item);
+		}
+		
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.SAL_MANAGER)) {
+			item = new JMenuItem("Write off");
+			item.setActionCommand("removeWhItems");
+			item.addActionListener(lstnr);
+			menu.add(item);
+		}
+		
 		item = new JMenuItem("View supply history");
 		item.setActionCommand("viewHistOnSupply");
 		item.addActionListener(lstnr);

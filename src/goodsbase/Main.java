@@ -72,7 +72,7 @@ public class Main {
 	}
 
 	private static boolean createFirstUser() throws DataLoadException {		
-		AuthDialog dialog = new AuthDialog(AuthDialog.NEW_ADMIN_USER);
+		AuthDialog dialog = new AuthDialog(User.ADMIN);
 		dialog.setVisible(true);
 		User result = dialog.getResult();
 		if(result== null) 

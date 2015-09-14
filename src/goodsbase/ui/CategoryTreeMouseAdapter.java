@@ -1,8 +1,9 @@
 package goodsbase.ui;
 
+import goodsbase.Main;
 import goodsbase.model.Category;
 import goodsbase.model.DataLoadException;
-import goodsbase.model.Loaders;
+import goodsbase.model.User;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,7 +12,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.xml.xpath.XPathExpressionException;
@@ -20,7 +20,8 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 
 	public CategoryTreeMouseAdapter(MainWindow window) {
 		this.window = window;
-	
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.WH_MANAGER)) {
 		ActionListener listener = new CategoryTreeNodeMenuListener(window);
 		/*menu init*/
 		treeMenu = new JPopupMenu();
@@ -40,19 +41,26 @@ class CategoryTreeMouseAdapter extends MouseAdapter{
 		item.setActionCommand("addProduct");
 		item.addActionListener(listener);
 		treeMenu.add(item);
+		} else {
+			treeMenu = null;
+		}
 	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger()) popupEvent(e);
+		if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+				Main.getCurrentUser().getRole().equals(User.WH_MANAGER))
+			if (e.isPopupTrigger()) popupEvent(e);
 	}
 		
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.isPopupTrigger()) {
-			popupEvent(e);
+			if(Main.getCurrentUser().getRole().equals(User.ADMIN) ||
+					Main.getCurrentUser().getRole().equals(User.WH_MANAGER))
+				popupEvent(e);
 		} else if (e.getClickCount() ==2) {
-			doubleClickEvent();
+				doubleClickEvent();
 		}
 	}
 	

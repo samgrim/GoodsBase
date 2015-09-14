@@ -33,8 +33,8 @@ public class AuthDialog extends JDialog implements ActionListener{
 
 	/**
 	 * Create the dialog.
-	 * @param mode - one of AuthDialog.NEW_ADMIN_USER, AuthDialog.NEW_WH_MAN_USER, 
-	 * AuthDialog.NEW_SAL_MAN_USER, AuthDialog.LOGIN
+	 * @param mode - one of User.ADMIN, User.WH_MANAGER, 
+	 * User.SAL_MANAGER, AuthDialog.LOGIN
 	 */
 	public AuthDialog(String mode) {
 		this.role = mode;
@@ -44,13 +44,13 @@ public class AuthDialog extends JDialog implements ActionListener{
 			case LOGIN:
 				title +="Log in";
 				break;
-			case NEW_ADMIN_USER:
+			case User.ADMIN:
 				title +="Create admin user";
 				break;
-			case NEW_SAL_MAN_USER:
+			case User.SAL_MANAGER:
 				title +="Create sales manager user";
 				break;	
-			case NEW_WH_MAN_USER:
+			case User.WH_MANAGER:
 				title +="Create warehouse manager user";
 				break;	
 		}
@@ -148,9 +148,6 @@ public class AuthDialog extends JDialog implements ActionListener{
 		return result;
 	}
 
-	public static final String NEW_ADMIN_USER = "admin";
-	public static final String NEW_WH_MAN_USER = "whmanager";
-	public static final String NEW_SAL_MAN_USER = "salesmanager";
 	public static final String LOGIN = "login";
 	/**
 	 * 
