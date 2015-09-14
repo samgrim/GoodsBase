@@ -27,8 +27,7 @@ public class Category {
 		}
 		
 	};
-	
-	
+		
 	private int id;
 	private String name;
 	private String description;
@@ -111,7 +110,7 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static Set<Category> loadAsSet() throws DataLoadException {		
-		Document doc = DataExecutor.load(getSelectRequest());
+		Document doc = DataExecutor.executeSelect("SELECT * FROM categories;");
 		try {
 			return parse(doc);
 		} catch (XPathExpressionException e) {
@@ -123,7 +122,8 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean delete(Category cat) throws DataLoadException {
-		int res = DataExecutor.execute(getDeleteRequest(cat));
+		String query = "DELETE FROM categories WHERE cat_id = " + cat.id + ";";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -133,14 +133,23 @@ public class Category {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean update(Category cat) throws DataLoadException {
-		int res = DataExecutor.execute(getUpdateRequest(cat));
+		String query = "UPDATE categories SET cat_name = '"+ cat.name 
+				+ "', cat_description = '"+ cat.description
+				+"', cat_parent_id = " + cat.parentId
+				+" WHERE cat_id = "+ cat.id +";";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
 	}
 	
 	public static boolean insert(Category cat) throws DataLoadException {
-		int res = DataExecutor.execute(getInsertRequest(cat));
+		String query = "INSERT INTO categories (CAT_NAME, CAT_DESCRIPTION, CAT_PARENT_ID) VALUES('"
+				+ cat.getName() +
+				"', '" +cat.getDescription()+
+				"', '" +cat.getParentId()+
+				"');";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -160,37 +169,6 @@ public class Category {
 				parentId,
 				xpath.evaluate("CAT_NAME", n),
 				xpath.evaluate("CAT_DESCRIPTION", n));
-	}
-	
-	private static QRequest getSelectRequest() {
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery("SELECT * FROM categories;");
-		return req;
-	}
-	
-	private static QRequest getUpdateRequest(Category cat){
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("UPDATE categories SET cat_name = '"+ cat.name 
-				+ "', cat_description = '"+ cat.description
-				+"', cat_parent_id = " + cat.parentId
-				+" WHERE cat_id = "+ cat.id +";");
-		return req;
-	}
-	
-	private static QRequest getDeleteRequest(Category cat) {
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("DELETE FROM categories WHERE cat_id = " + cat.id + ";");
-		return req;
-	}
-	
-	private static QRequest getInsertRequest(Category cat) {
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("INSERT INTO categories (CAT_NAME, CAT_DESCRIPTION, CAT_PARENT_ID) VALUES('"
-				+ cat.getName() +
-				"', '" +cat.getDescription()+
-				"', '" +cat.getParentId()+
-				"');");
-		return req;
 	}
 	
 	private static Set<Category> parse(Document doc) throws XPathExpressionException {
@@ -232,8 +210,4 @@ public class Category {
 		cat = Category.loadAsSet();
 		QServer.stop();
 	}
-
-
-	
-
 }

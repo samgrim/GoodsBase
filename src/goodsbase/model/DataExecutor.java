@@ -20,7 +20,21 @@ public class DataExecutor {
 	
 	/**Loads data from the server as an xml document
 	 * @throws DataLoadException*/
-	public static Document load(QRequest req) throws DataLoadException  {
+	public static Document executeSelect(String query) throws DataLoadException {
+		QRequest req = new QRequest(QRequest.Type.SELECT);
+		req.addQuery(query);
+		return load(req);
+	}
+	
+	/**Sends request to the server and receives response code
+	 * @throws DataLoadException */
+	public static int executeUpdate(String query) throws DataLoadException {
+		QRequest req = new QRequest(QRequest.Type.UPDATE);
+		req.addQuery(query);
+		return execute(req);
+	}
+	
+	private static Document load(QRequest req) throws DataLoadException  {
 		Document doc = null;
 		try(Socket s = new Socket(HOST, PORT);){
 			ObjectOutputStream out  = new ObjectOutputStream(s.getOutputStream());
@@ -38,9 +52,8 @@ public class DataExecutor {
 		return doc;
 	}
 	
-	/**Sends request to the server and receives response code
-	 * @throws DataLoadException */
-	public static int execute(QRequest req) throws DataLoadException {
+
+	private static int execute(QRequest req) throws DataLoadException {
 		int result = 0;
 		try(Socket s = new Socket(HOST, PORT);){
 			ObjectOutputStream out  = new ObjectOutputStream(s.getOutputStream());

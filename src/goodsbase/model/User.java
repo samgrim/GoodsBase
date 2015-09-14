@@ -87,9 +87,7 @@ public class User {
 	public static boolean createUser(User user) throws DataLoadException{
 		String query = "INSERT INTO USERS (USERNAME, PASSWORD, ROLE) VALUES ('"+user.username
 				+"', '"+ user.password +"', '"+user.role +"');";
-		QRequest request = new QRequest(QRequest.Type.UPDATE);
-		request.addQuery(query);
-		int result = DataExecutor.execute(request);
+		int result = DataExecutor.executeUpdate(query);
 		if (result == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -98,10 +96,8 @@ public class User {
 	public static boolean updateUser(User user) throws DataLoadException {
 		String query = "UPDATE USERS SET username='"+user.username
 				+ "', password ='" +user.password +"', role='"+user.role+"'"
-						+ "where id="+user.id+");";
-		QRequest request = new QRequest(QRequest.Type.UPDATE);
-		request.addQuery(query);
-		int result = DataExecutor.execute(request);
+						+ "where id="+user.id+");";		
+		int result = DataExecutor.executeUpdate(query);
 		if (result == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -109,10 +105,7 @@ public class User {
 	
 	public static int getUsersCount() throws DataLoadException, XPathExpressionException {
 		String query = "SELECT COUNT(*) AS NUM FROM users";
-		QRequest request = new QRequest(QRequest.Type.SELECT);
-		request.addQuery(query);
-		Document doc;
-		doc = DataExecutor.load(request);
+		Document doc = DataExecutor.executeSelect(query);
 		if (doc != null && doc.getChildNodes().getLength()>0) {
 			XPathFactory fact = XPathFactory.newInstance();
 			XPath xpath = fact.newXPath();
@@ -125,10 +118,8 @@ public class User {
 	public static User getUser(String username, char[] password) throws NoSuchAlgorithmException, DataLoadException, XPathExpressionException {
 		String query = "SELECT * FROM USERS WHERE username='" + username
 				+"' AND password='"+ toMd5Hex(password) +"';";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
 		try {
-			Document doc = DataExecutor.load(req);
+			Document doc = DataExecutor.executeSelect(query);
 			if (doc != null && doc.getChildNodes().getLength()>0)  {
 				XPathFactory fact = XPathFactory.newInstance();
 				XPath xpath = fact.newXPath();

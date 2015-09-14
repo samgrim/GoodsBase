@@ -17,8 +17,6 @@ import goodsbase.qserver.QRequest;
 
 /**Describes product*/
 public class Product {
-
-	
 	
 	/**@throws NullPointerException if name, manufacturer or category is null*/
 	public Product(String name, String description, String tradeMark, String manufacturer, Category category) {
@@ -148,7 +146,8 @@ public class Product {
 	 **/
 	//TODO: constraints
 	public static boolean delete(Product prod) throws DataLoadException {
-		int res = DataExecutor.execute(getDeleteRequest(prod));
+		String query = "DELETE FROM products WHERE prod_id = " + prod.getId() + ";";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -160,14 +159,26 @@ public class Product {
 	 * @throws DataLoadException 
 	 **/
 	public static boolean update(Product prod) throws DataLoadException {
-		int res = DataExecutor.execute(getUpdateRequest(prod));
+		String query = "UPDATE products SET prod_name ='" + prod.getName() 
+				+ "', prod_description ='" + prod.getDescription()
+				+"', prod_trade_mark = '" + prod.getTradeMark()
+				+"', prod_manufacturer = '" + prod.getManufacturer()
+				+"', prod_category_id = '" + prod.getCategory().getId()
+				+"' WHERE prod_id = "+prod.getId()+";";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
 	}
 	
 	public static boolean insert(Product prod) throws DataLoadException {
-		int res = DataExecutor.execute(getInsertRequest(prod));
+		String query = "INSERT INTO products (prod_name, prod_description, prod_trade_mark,"
+				+ "prod_manufacturer, prod_category_id) VALUES ( '" + prod.getName() + "','"
+				+ prod.getDescription() +"','"
+				+ prod.getTradeMark() +"','"
+				+ prod.getManufacturer() +"','"
+				+ prod.getCategory().getId() +"');";
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;
@@ -189,37 +200,7 @@ public class Product {
 				+ "prod_manufacturer,(SELECT COUNT(*) FROM wh_items WHERE wh_items.product_id = products.id) as availability FROM products WHERE category_id =" + cat.getId() + ";");
 		return req;
 	}*/
-	
-	private static QRequest getInsertRequest(Product prod) {
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("INSERT INTO products (prod_name, prod_description, prod_trade_mark,"
-				+ "prod_manufacturer, prod_category_id) VALUES ( '" + prod.getName() + "','"
-						+ prod.getDescription() +"','"
-						+ prod.getTradeMark() +"','"
-						+ prod.getManufacturer() +"','"
-						+ prod.getCategory().getId() +"');");
-		return req;
-	}
-	
-	private static QRequest getUpdateRequest(Product prod) {
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		String query = "UPDATE products SET prod_name ='" + prod.getName() 
-				+ "', prod_description ='" + prod.getDescription()
-				+"', prod_trade_mark = '" + prod.getTradeMark()
-				+"', prod_manufacturer = '" + prod.getManufacturer()
-				+"', prod_category_id = '" + prod.getCategory().getId()
-				+"' WHERE prod_id = "+prod.getId()+";";
-		req.addQuery(query);
-		return req;
-	}
-	
-	private static QRequest getDeleteRequest(Product prod) {
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery("DELETE FROM products WHERE prod_id = " + prod.getId() + ";");
-		return req;
-	}
-	
-	
+		
 	private static Set<Product> parse(Document doc, Category cat) throws XPathExpressionException {
 		Set<Product> prod = new HashSet<Product>();
 		XPathFactory xpfactory = XPathFactory.newInstance();

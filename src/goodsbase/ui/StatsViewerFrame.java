@@ -1,8 +1,7 @@
 package goodsbase.ui;
 
-import goodsbase.model.DataLoadException;
 import goodsbase.model.DataExecutor;
-import goodsbase.qserver.QRequest;
+import goodsbase.model.DataLoadException;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -176,9 +175,8 @@ public class StatsViewerFrame extends JFrame {
 				+" (SELECT SUM(WH_PRICE*WH_QUANTITY) FROM PRODUCTS INNER JOIN WH_ITEMS WHERE PROD_ID = WH_PRODUCT_ID AND PROD_CATEGORY_ID = CATS.CAT_ID) AS WH_SUM,"
 				+" COUNT(PRODUCTS.PROD_ID) AS PRODUCTS_IN_CAT"
 				+" FROM CATEGORIES AS CATS LEFT JOIN PRODUCTS ON PRODUCTS.PROD_CATEGORY_ID = CATS.CAT_ID GROUP BY CATS.CAT_ID ORDER BY CAT_PARENT_ID, CAT_NAME;";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		return DataExecutor.load(req);
+	
+		return DataExecutor.executeSelect(query);
 	}
 	
 	
@@ -247,9 +245,8 @@ public class StatsViewerFrame extends JFrame {
 							  + " (SELECT SUM(SUPPLIES_PRICE*SUPPLIES_QUANTITY)FROM SUPPLIES WHERE PRODUCTS.PROD_ID = SUPPLIES.SUPPLIES_PRODUCT_ID AND"
 							 + " SUPPLIES_TYPE = 'WRITEOFF') AS WRITEOFFS_SUM"
 							+" FROM PRODUCTS ORDER BY PROD_NAME;";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		return DataExecutor.load(req);
+	
+		return DataExecutor.executeSelect(query);
 	}
 
 	private JPanel contentPane;

@@ -102,9 +102,8 @@ public class Supply {
 				+s.quantity + ", '"
 				+s.unit + "', "
 				+s.price +");";
-		QRequest req = new QRequest(QRequest.Type.UPDATE);
-		req.addQuery(query);
-		int res = DataExecutor.execute(req);
+	
+		int res = DataExecutor.executeUpdate(query);
 		if (res == QRequest.OK_CODE)
 			return true;
 		return false;

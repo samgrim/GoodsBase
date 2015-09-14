@@ -33,9 +33,7 @@ public class Loaders {
 	public static Category[] getCategoriesByNameAsArray() throws DataLoadException,
 			XPathExpressionException {
 		String query = "SELECT * FROM categories ORDER BY cat_name;";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		Document doc = DataExecutor.load(req);
+		Document doc = DataExecutor.executeSelect(query);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -59,9 +57,7 @@ public class Loaders {
 				+ "prod_manufacturer,(SELECT COUNT(*) FROM wh_items WHERE wh_items.wh_product_id = products.prod_id)"
 				+ " as availability FROM products WHERE prod_category_id ="
 				+ cat.getId() + ";";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		Document doc = DataExecutor.load(req);
+		Document doc = DataExecutor.executeSelect(query);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -96,9 +92,7 @@ public class Loaders {
 				+ " categories.cat_description, categories.cat_parent_id, (SELECT COUNT(*) FROM wh_items WHERE wh_items.wh_product_id = products.prod_id)"
 				+ " as availability FROM products INNER JOIN categories ON"
 				+ " products.prod_category_id = categories.cat_id;";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		return getProducts(req);
+		return getProducts(query);
 	}
 	
 	public static Object[][] search(String text) throws XPathExpressionException, DataLoadException {
@@ -112,14 +106,12 @@ public class Loaders {
 				+ " WHERE products.prod_name LIKE '%" + searchLine + "%' OR"
 				+ " products.prod_description LIKE '%" + searchLine + "%' OR"
 				+ " products.prod_manufacturer LIKE '%" + searchLine + "%' ;";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		return getProducts(req);	
+		return getProducts(query);	
 	}
 	
 	
-	private static Object[][] getProducts(QRequest req) throws DataLoadException, XPathExpressionException {
-		Document doc = DataExecutor.load(req);
+	private static Object[][] getProducts(String query) throws DataLoadException, XPathExpressionException {
+		Document doc = DataExecutor.executeSelect(query);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -152,9 +144,7 @@ public class Loaders {
 	public static Object[][] getWhItemsOn(Product p) throws DataLoadException, XPathExpressionException {
 		String query = "SELECT wh_quantity, wh_units, wh_price, wh_price*wh_quantity AS wh_total"
 				+ " FROM wh_items WHERE wh_product_id =" + p.getId() + ";";
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		Document doc = DataExecutor.load(req);
+		Document doc = DataExecutor.executeSelect(query);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
@@ -182,9 +172,7 @@ public class Loaders {
 	}
 	
 	private static Object[][] getSupplies(String query) throws DataLoadException, XPathExpressionException {
-		QRequest req = new QRequest(QRequest.Type.SELECT);
-		req.addQuery(query);
-		Document doc = DataExecutor.load(req);
+		Document doc = DataExecutor.executeSelect(query);
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		NodeList nodes = (NodeList) xpath.evaluate("result/line", doc,
