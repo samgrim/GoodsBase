@@ -63,7 +63,8 @@ BEGIN
 END
 
 //не дай бог их перепутать их порядок
-//вставка нового +
+
+//вставка нового 
 CREATE TRIGGER IF NOT EXISTS update_whitems_1 BEFORE INSERT ON supplies
      WHEN NOT EXISTS(SELECT * FROM wh_items
 			WHERE wh_product_id = NEW.supplies_product_id
@@ -74,7 +75,7 @@ BEGIN
     INSERT INTO wh_items(WH_PRODUCT_ID, WH_QUANTITY, WH_UNITS, WH_PRICE)
     VALUES (NEW.supplies_product_id, NEW.supplies_quantity, NEW.supplies_units, NEW.supplies_price);
 END
-//добавление к существующим +
+//добавление к существующим 
 CREATE TRIGGER IF NOT EXISTS update_whitems_2 BEFORE INSERT ON supplies
      WHEN EXISTS(SELECT * FROM wh_items
 			WHERE wh_product_id = NEW.supplies_product_id

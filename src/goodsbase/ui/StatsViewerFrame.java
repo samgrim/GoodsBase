@@ -103,15 +103,21 @@ public class StatsViewerFrame extends JFrame {
 	private void initDoc(JTextPane pane) {
 		HTMLDocument doc = (HTMLDocument) pane.getDocument();
 		try {
-			doc.insertAfterStart(doc.getDefaultRootElement().getElement(0), "<h1>Goods Base statistics</h1>"
-					+ "<div id = \"categories\"></div>");
-			Document catStats = getCategoryStats();
-			Document prodStats = getProdStats();
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
+			StringBuilder line = new StringBuilder();
+			line.append("<h1>Goods Base statistics</h1><ul>");
+			Document sumStats = getWhSumStats();
+			line.append("<li>Categories total: "+xpath.evaluate("result/line/CAT_COUNT", sumStats)+"</li>");
+			line.append("<li>Products total: "+xpath.evaluate("result/line/PROD_COUNT", sumStats)+"</li>");
+			line.append("<li>Sum at warehouse: "+xpath.evaluate("result/line/WH_SUM", sumStats)+"</li>");		
+			line.append("</ul><div id = \"categories\"></div>");
+			doc.insertAfterStart(doc.getDefaultRootElement().getElement(0), line.toString());
+			Document catStats = getCategoryStats();
+			Document prodStats = getProdStats();
+			
 			NodeList cats = (NodeList) xpath.evaluate("result/line", catStats, XPathConstants.NODESET);
-			String id, parent;
-			StringBuilder line;
+			String id, parent;			
 			Element elem;
 			Node item;
 			for(int i = 0; i < cats.getLength(); i++){
@@ -179,6 +185,13 @@ public class StatsViewerFrame extends JFrame {
 		return DataExecutor.executeSelect(query);
 	}
 	
+	private Document getWhSumStats() throws DataLoadException{
+		String query = "SELECT COUNT(*) AS CAT_COUNT, "
+				+ "(SELECT COUNT(*) FROM PRODUCTS) AS PROD_COUNT, "
+				+ "(SELECT SUM(WH_PRICE*WH_QUANTITY) FROM WH_ITEMS) AS WH_SUM FROM CATEGORIES;";
+		return DataExecutor.executeSelect(query);
+	}
+	
 	
 	private void writeProdStats(HTMLDocument stats, Document doc, String catId, XPath xpath) throws XPathExpressionException, BadLocationException, IOException{
 		NodeList prods = (NodeList) xpath.evaluate("result/line[PROD_CATEGORY_ID="+ catId +"]", doc, XPathConstants.NODESET);
@@ -225,6 +238,7 @@ public class StatsViewerFrame extends JFrame {
 		style.addRule(".products { font-size: 1em;clear:both;margin-left: 20px;font-style: italic;}");
 		style.addRule(".products caption { text-align:left;font-weight:bold;}");
 		style.addRule(".products tr:first-child {background-color: #666699;}");
+		style.addRule("ul {font-weight: bold;}");
 		htmlEditorKit.setStyleSheet(style);
 		HTMLDocument doc = (HTMLDocument)htmlEditorKit.createDefaultDocument();
 		textPane.setEditorKit(htmlEditorKit);
